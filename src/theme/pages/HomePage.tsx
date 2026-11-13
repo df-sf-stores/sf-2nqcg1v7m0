@@ -1,258 +1,354 @@
-import type { ReactNode } from 'react'
-import { Image, Link, useCollections, useListing, useMenu, useProducts, useStorefront, type CollectionCard, type ProductCard as Card } from '@dripfunnel/storefront-core/theme'
-import { HeroCarousel } from '../components/interactive/HeroCarousel'
+import { Link, ThemeImage, useCollections, useListing, useProducts, useStorefront, type CollectionCard } from '@dripfunnel/storefront-core/theme'
+import { CollectionPicture } from '../components/CollectionPicture'
 import { Layout } from '../components/Layout'
-import { ProductCard } from '../components/ProductCard'
-import { SectionHeading } from '../components/SectionHeading'
-import { Spotlight } from '../components/Spotlight'
+import { ProductCarousel } from '../components/interactive/ProductCarousel'
+import { Newsletter } from '../components/interactive/Newsletter'
 import { cx } from '../components/cx'
 import { slugOf } from '../components/slugOf'
-import art from '../styles/art.module.css'
+import { tidyName } from '../components/tidyName'
 import shop from '../styles/shop.module.css'
 import styles from '../styles/home.module.css'
 
-/** The painted placeholder behind a collection's picture, in turn by its place in the store's list. */
-const paints = [art.stone, art.sand, art.slate, art.sage]
-const paintOf = (index: number) => paints[index % paints.length]
-
-const Pledge = ({ title, body, children }: { title: string; body: string; children: ReactNode }) => (
-  <li className={styles.promise}>
-    <span className={styles.promiseIcon} aria-hidden="true">
-      <svg viewBox="0 0 24 24" focusable="false">
-        {children}
-      </svg>
-    </span>
-    <h3 className={styles.promiseTitle}>{title}</h3>
-    <p className={styles.promiseBody}>{body}</p>
-  </li>
-)
-
-const ArrowIcon = () => (
+const Arrow = () => (
   <svg className={styles.arrowIcon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
     <path d="M5 12h14M13 6l6 6-6 6" />
   </svg>
 )
 
-/** The rail's one row of grey cards, in the shape its products arrive in: loading, or with a note when there are none. */
-const RailPlaceholder = ({ label, note }: { label: string; note: string | null }) => (
-  <div className={styles.railHold}>
-    <ul className={styles.railList} aria-hidden={note ? true : undefined} aria-busy={note ? undefined : true} aria-label={note ? undefined : label}>
-      {[0, 1, 2, 3].map((i) => (
-        <li key={i} className={styles.railItem}>
-          <div className={shop.skeletonPicture} />
-          <div className={shop.skeletonLine} />
-        </li>
-      ))}
-    </ul>
-    {note ? <p className={styles.railEmpty}>{note}</p> : null}
-  </div>
-)
+const number = (index: number) => String(index + 1).padStart(2, '0')
 
-/**
- * A titled row of product cards that scrolls sideways on narrow screens. With `empty`, a store without products
- * keeps the row's place and says so, so nothing below it moves (the publish gate's layout-shift budget).
- */
-const ProductRail = ({ title, action, products, empty }: { title: string; action: ReactNode; products: { status: string; items: Card[] }; empty?: string }) => {
-  const { t } = useStorefront()
-  const none = products.status !== 'loading' && !products.items.length
-  if (none && !empty) return null
+/** The store's scent collection, by its address, for the fragrance edit; a store without one leaves the section out. */
+const isScent = (c: CollectionCard) => /fragran|perfum|parfum|scent|attar|cologne/i.test(slugOf(c))
+
+/** Cinematic opening: the season's photograph, the headline, two collections to shop and the season index. */
+const Hero = ({ collections }: { collections: readonly CollectionCard[] }) => {
+  const { store, t } = useStorefront()
+  const [first, second] = collections
   return (
-    <section className={styles.rail}>
-      <div className={styles.railHead}>
-        <h2 className={styles.railTitle}>{title}</h2>
-        {none ? null : action}
+    <section className={styles.hero}>
+      <div className={styles.heroPicture}>
+        <ThemeImage src="hero.webp" alt="" ratio={2400 / 1623} sizes="(min-width: 900px) 70vw, 100vw" className={styles.cover} />
       </div>
-      {products.status === 'loading' || none ? (
-        <RailPlaceholder label={t('shop.listing.loading')} note={none ? (empty ?? null) : null} />
-      ) : (
-        <ul className={styles.railList}>
-          {products.items.map((product) => (
-            <li key={product.id} className={styles.railItem}>
-              <ProductCard product={product} />
-            </li>
-          ))}
-        </ul>
-      )}
+      <span className={styles.heroShade} aria-hidden="true" />
+      <p className={styles.heroSide} aria-hidden="true">
+        <span>{t('home.hero.side', { store: store.name })}</span>
+        <span className={styles.heroSideRule} />
+        <span>{t('home.hero.since')}</span>
+      </p>
+      <div className={styles.heroInner}>
+        <div className={styles.heroCopy}>
+          <p className={styles.lineEyebrow}>{t('home.hero.eyebrow')}</p>
+          <h1 className={styles.heroTitle}>
+            {t('home.hero.title')} <em className={styles.heroAccent}>{t('home.hero.accent')}</em>
+          </h1>
+          <p className={styles.heroLead}>
+            {t('home.hero.lead')}
+            <br />
+            {t('home.hero.leadMore')}
+          </p>
+          <div className={styles.heroActions}>
+            <Link href={first?.href ?? '/collections/all/'} className={styles.solidButton}>
+              {first ? t('home.hero.shop', { name: tidyName(first.name) }) : t('home.hero.shopAll')}
+              <Arrow />
+            </Link>
+            {second ? (
+              <Link href={second.href} className={styles.ghostButton}>
+                {t('home.hero.shop', { name: tidyName(second.name) })}
+                <Arrow />
+              </Link>
+            ) : null}
+          </div>
+        </div>
+        {collections.length ? (
+          <nav className={styles.index} aria-label={t('home.hero.index')}>
+            <p className={styles.indexTitle}>{t('home.hero.index')}</p>
+            <ol className={styles.indexList}>
+              {collections.slice(0, 5).map((c, i) => (
+                <li key={c.id}>
+                  <Link href={c.href} className={styles.indexLink}>
+                    <span className={styles.indexNumber}>{number(i)}</span>
+                    <span className={styles.indexName}>{tidyName(c.name)}</span>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        ) : null}
+      </div>
+      <p className={styles.scroll} aria-hidden="true">
+        {t('home.hero.scroll')}
+        <span className={styles.scrollLine} />
+      </p>
     </section>
   )
 }
 
-/** A collection's products under a centred heading, with a "view all" pill. */
-const Deals = ({ collection }: { collection: CollectionCard | undefined }) => {
+/** The store's collections as a staggered mosaic of tall pictures; an odd one out closes the mosaic as a wide band. */
+const Categories = ({ collections, busy }: { collections: readonly CollectionCard[]; busy: boolean }) => {
+  const { store, t } = useStorefront()
+  if (!busy && !collections.length) return null
+  const band = collections.length % 2 === 1 && collections.length > 1 ? collections.length - 1 : -1
+  return (
+    <section className={styles.categories}>
+      <div className={styles.container}>
+        <div className={styles.splitHead}>
+          <div>
+            <p className={styles.lineEyebrow}>{t('home.categories.eyebrow', { store: store.name })}</p>
+            <h2 className={styles.displayTitle}>
+              {t('home.categories.title')}
+              <br />
+              {t('home.categories.titleMore')}
+            </h2>
+          </div>
+          <p className={styles.splitLead}>{t('home.categories.lead', { store: store.name })}</p>
+        </div>
+        <ul className={styles.mosaic} aria-busy={busy}>
+          {busy
+            ? [0, 1, 2, 3].map((i) => (
+                <li key={i} className={cx(styles.mosaicItem, i % 2 === 1 && styles.mosaicLow)}>
+                  <span className={cx(styles.mosaicCard, i % 4 === 0 || i % 4 === 3 ? styles.mosaicTall : styles.mosaicShort)} />
+                </li>
+              ))
+            : collections.map((c, i) => (
+                <li key={c.id} className={cx(styles.mosaicItem, i === band ? styles.mosaicBand : i % 2 === 1 && styles.mosaicLow)}>
+                  <Link href={c.href} className={cx(styles.mosaicCard, i === band ? styles.mosaicWide : i % 4 === 0 || i % 4 === 3 ? styles.mosaicTall : styles.mosaicShort)}>
+                    <CollectionPicture collection={c} named ratio={i === band ? 2.6 : 0.8} width={i === band ? 1120 : 560} className={styles.cover} />
+                    <span className={styles.mosaicShade} />
+                    <span className={styles.mosaicCopy}>
+                      <span className={styles.mosaicName}>{tidyName(c.name)}</span>
+                      {c.description ? <span className={styles.mosaicLead}>{c.description}</span> : null}
+                      <span className={styles.mosaicMore}>
+                        {t('home.categories.explore')}
+                        <Arrow />
+                      </span>
+                    </span>
+                    <span className={styles.mosaicNumber}>{number(i)}</span>
+                  </Link>
+                </li>
+              ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+/** One collection, half photograph and half ivory page, with a few of its products named under it. */
+const Featured = ({ collection }: { collection: CollectionCard | undefined }) => {
   const { t } = useStorefront()
   const { items } = useListing({ collection: collection ? slugOf(collection) : null }, collection !== undefined)
-  if (!collection || !items.length) return null
+  if (!collection) return null
   return (
-    <section className={styles.section}>
-      <SectionHeading eyebrow={t('home.deals.eyebrow')} title={collection.name} />
-      <ul className={styles.grid}>
-        {items.slice(0, 8).map((product) => (
-          <li key={product.id}>
-            <ProductCard product={product} />
-          </li>
-        ))}
-      </ul>
-      <div className={styles.more}>
-        <Link href={collection.href} className={styles.pill}>
-          {t('home.viewAll')}
-          <ArrowIcon />
+    <section className={styles.featured}>
+      <div className={styles.featuredPicture}>
+        <ThemeImage src="featured.webp" alt="" ratio={0.8} sizes="(min-width: 900px) 50vw, 100vw" className={styles.cover} />
+        <p className={styles.featuredCaption}>{t('home.featured.caption', { name: collection.name })}</p>
+      </div>
+      <div className={styles.featuredCopy}>
+        <p className={styles.lineEyebrow}>{t('home.featured.eyebrow')}</p>
+        <h2 className={styles.featuredTitle}>{collection.name}</h2>
+        <p className={styles.featuredLead}>{collection.description || t('home.featured.lead')}</p>
+        <Link href={collection.href} className={styles.navyButton}>
+          {t('home.featured.cta')}
+          <Arrow />
+        </Link>
+        {items.length > 1 ? (
+          <div className={styles.also}>
+            <p className={styles.alsoTitle}>{t('home.featured.also', { name: collection.name })}</p>
+            <ul className={styles.alsoList}>
+              {items.slice(0, 3).map((p) => (
+                <li key={p.id}>
+                  <Link href={p.href} className={styles.alsoLink}>
+                    {p.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+      </div>
+    </section>
+  )
+}
+
+const Arrivals = () => {
+  const { store, t } = useStorefront()
+  const newest = useProducts({ sort: 'newest', first: 12 })
+  const none = newest.status !== 'loading' && !newest.products.length
+  return (
+    <section className={styles.arrivals}>
+      <div className={styles.container}>
+        <div className={styles.arrivalsHead}>
+          <div>
+            <p className={styles.lineEyebrow}>{t('home.arrivals.eyebrow', { store: store.name })}</p>
+            <h2 className={styles.sectionTitle}>{t('home.arrivals.title')}</h2>
+            <p className={styles.sectionLead}>{t('home.arrivals.lead')}</p>
+          </div>
+        </div>
+        {newest.status === 'loading' ? (
+          <ul className={styles.carouselList} aria-busy="true" aria-label={t('shop.listing.loading')}>
+            {[0, 1, 2, 3].map((i) => (
+              <li key={i} className={styles.carouselItem}>
+                <div className={cx(shop.skeletonPicture, styles.darkSkeleton)} />
+              </li>
+            ))}
+          </ul>
+        ) : none ? (
+          <p className={styles.arrivalsEmpty}>{t('home.arrivals.empty')}</p>
+        ) : (
+          <ProductCarousel
+            products={newest.products}
+            action={
+              <Link href="/collections/all/" className={styles.lightLink}>
+                {t('home.arrivals.viewAll')}
+                <Arrow />
+              </Link>
+            }
+          />
+        )}
+      </div>
+    </section>
+  )
+}
+
+const Campaign = () => {
+  const { store, t } = useStorefront()
+  return (
+    <section className={styles.campaign}>
+      <div className={styles.campaignPicture}>
+        <ThemeImage src="campaign.webp" alt="" ratio={16 / 9} sizes="100vw" className={styles.cover} />
+      </div>
+      <span className={styles.campaignShade} aria-hidden="true" />
+      <div className={styles.campaignCopy}>
+        <p className={styles.campaignEyebrow}>
+          {t('home.campaign.eyebrow', { store: store.name })}
+          <span className={styles.slash} aria-hidden="true" />
+          {t('home.campaign.season')}
+        </p>
+        <h2 className={styles.campaignTitle}>
+          {t('home.campaign.title')}
+          <em className={styles.campaignAccent}>{t('home.campaign.accent')}</em>
+        </h2>
+        <Link href="/collections/all/" className={styles.ghostButton}>
+          {t('home.campaign.cta')}
+          <Arrow />
         </Link>
       </div>
     </section>
   )
 }
 
-export const HomePage = () => {
-  const { t } = useStorefront()
-  const menu = useMenu()
-  const { collections: categories, status } = useCollections({ first: 20 })
-  const newest = useProducts({ sort: 'newest', first: 8 })
-  const primary = categories[0] ? slugOf(categories[0]) : null
-  const featured = useListing({ collection: primary }, primary !== null)
-  const storyImage = categories[0]?.image ?? null
-  const signupImage = categories[1]?.image ?? null
-  const slideHref = (index: number) => categories[index]?.href ?? '/collections/all/'
-  // Spotlights take the store's third to fifth collections, after the featured rail's and the grid's.
-  const spotlight = (index: number, end: boolean) => {
-    const c = categories[index]
-    return c ? <Spotlight collection={c} picture={paintOf(index)} end={end} /> : null
-  }
-  const groups = menu.items.filter((item) => item.children.length)
-  const viewAll = (
-    <Link href="/collections/all/" className={styles.textLink}>
-      {t('home.viewAll')}
-      <ArrowIcon />
-    </Link>
+/** The fragrance edit: the store's name set large, the scent collection's products as a numbered list, and a still life. */
+const Scents = ({ collection }: { collection: CollectionCard | undefined }) => {
+  const { store, t } = useStorefront()
+  const { items } = useListing({ collection: collection ? slugOf(collection) : null }, collection !== undefined)
+  if (!collection) return null
+  return (
+    <section className={styles.scents}>
+      <div className={cx(styles.container, styles.scentsInner)}>
+        <div className={styles.scentsCopy}>
+          <p className={styles.lineEyebrow}>{t('home.scents.eyebrow', { name: collection.name })}</p>
+          <h2 className={styles.scentsTitle}>{store.name}</h2>
+          <p className={styles.scentsLead}>
+            {t('home.scents.lead')}
+            <br />
+            {t('home.scents.leadMore')}
+          </p>
+          {items.length ? (
+            <ol className={styles.scentList}>
+              {items.slice(0, 5).map((p, i) => (
+                <li key={p.id}>
+                  <Link href={p.href} className={styles.scentLink}>
+                    <span className={styles.scentNumber}>{number(i)}</span>
+                    <span className={styles.scentName}>{p.name}</span>
+                    <Arrow />
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          ) : null}
+          <Link href={collection.href} className={styles.goldButton}>
+            {t('home.scents.cta', { name: collection.name })}
+            <Arrow />
+          </Link>
+        </div>
+        <div className={styles.scentsPicture}>
+          <ThemeImage src="fragrance-feature.webp" alt={collection.name} ratio={0.82} sizes="(min-width: 900px) 560px, 100vw" className={styles.cover} />
+          <p className={styles.scentsWord} aria-hidden="true">
+            {t('home.scents.word')}
+          </p>
+        </div>
+      </div>
+    </section>
   )
+}
+
+const Detail = () => {
+  const { store, t } = useStorefront()
+  return (
+    <section className={styles.detail}>
+      <div className={cx(styles.container, styles.detailInner)}>
+        <h2 className={styles.detailTitle}>
+          <span className={styles.detailFirst}>{t('home.detail.first')}</span>
+          <em className={styles.detailBy}>{t('home.detail.by')}</em>
+          <span className={styles.detailLast}>{t('home.detail.last')}</span>
+        </h2>
+        <div className={styles.detailCopy}>
+          <p className={styles.detailBody}>
+            {t('home.detail.body')}
+            <br />
+            {t('home.detail.bodyMore')}
+            <br />
+            {t('home.detail.bodyLast', { store: store.name })}
+          </p>
+          <Link href="/about/" className={styles.inkLink}>
+            {t('home.detail.more', { store: store.name })}
+            <Arrow />
+          </Link>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export const HomePage = () => {
+  const { store, t } = useStorefront()
+  // `first: 20` matches the header's request, so both share one answer.
+  const { collections, status } = useCollections({ first: 20 })
+  const scent = collections.find(isScent)
+  const featured = collections.find((c) => c !== scent)
   return (
     <Layout>
-      <h1 className={styles.hidden}>{t('home.title')}</h1>
-      <HeroCarousel
-        slides={[
-          { key: 'first', art: art.bannerFirst, href: slideHref(0), label: t('home.hero.first') },
-          { key: 'second', art: art.bannerSecond, href: slideHref(1), label: t('home.hero.second') },
-          { key: 'third', art: art.bannerThird, href: slideHref(2), label: t('home.hero.third') },
-        ]}
-        labels={{ region: t('home.hero.region'), role: t('home.hero.role'), previous: t('home.hero.previous'), next: t('home.hero.next'), pause: t('home.hero.pause'), play: t('home.hero.play'), goTo: (n) => t('home.hero.goTo', { n }) }}
-      />
-      <ProductRail title={t('home.newest')} action={viewAll} products={{ status: newest.status, items: newest.products }} empty={t('home.newestEmpty')} />
-      <section className={styles.promises}>
-        <h2 className={styles.hidden}>{t('home.promises.title')}</h2>
-        <ul className={styles.promiseList}>
-          <Pledge title={t('home.promises.craft.title')} body={t('home.promises.craft.body')}>
-            <path d="M6 3h12l4 6-10 12L2 9zM2 9h20M12 21L8 9l4-6 4 6z" />
-          </Pledge>
-          <Pledge title={t('home.promises.stage.title')} body={t('home.promises.stage.body')}>
-            <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 3v4M21 5h-4M5 17v4M7 19H3" />
-          </Pledge>
-          <Pledge title={t('home.promises.secure.title')} body={t('home.promises.secure.body')}>
-            <path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4" />
-          </Pledge>
-          <Pledge title={t('home.promises.support.title')} body={t('home.promises.support.body')}>
-            <path d="M4 14v-2a8 8 0 0116 0v2M4 14a2 2 0 002 2h1v-5H6a2 2 0 00-2 2zM20 14a2 2 0 01-2 2h-1v-5h1a2 2 0 012 2zM17 16v1a3 3 0 01-3 3h-2" />
-          </Pledge>
-        </ul>
-      </section>
-      {status === 'loading' || categories.length ? (
-        <section className={styles.section}>
-          <SectionHeading eyebrow={t('home.collections.eyebrow')} title={t('home.collections.title')} />
-          <ul className={styles.tiles} aria-busy={status === 'loading'}>
-            {status === 'loading'
-              ? [0, 1, 2, 3].map((i) => (
-                  <li key={i}>
-                    <span className={styles.tile} />
-                  </li>
-                ))
-              : categories.map((c, index) => (
-                  <li key={c.id}>
-                    <Link href={c.href} className={cx(styles.tile, art.art, paintOf(index))}>
-                      {c.image ? <Image image={c.image} alt="" ratio={0.75} sizes="(min-width: 900px) 25vw, 50vw" className={styles.tileImage} /> : null}
-                      <span className={styles.tileFrame} />
-                      <span className={styles.tileText}>
-                        <span className={styles.tileName}>{c.name}</span>
-                        <span className={styles.tileMore}>
-                          {t('home.collections.explore')}
-                          <ArrowIcon />
-                        </span>
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-          </ul>
-        </section>
-      ) : null}
-      <Deals collection={categories[1]} />
-      {spotlight(2, true)}
-      <ProductRail title={t('home.featured')} action={viewAll} products={{ status: featured.status, items: featured.items.slice(0, 8) }} />
-      {spotlight(3, false)}
-      {spotlight(4, true)}
-      <section className={styles.story}>
-        <div className={styles.storyFrame}>
-          <div className={cx(styles.storyPicture, art.art, art.stone)}>
-            {storyImage ? <Image image={storyImage} alt="" ratio={0.8} sizes="(min-width: 900px) 448px, 100vw" className={styles.cover} /> : null}
+      <Hero collections={collections} />
+      <section className={styles.edit}>
+        <div className={cx(styles.container, styles.editInner)}>
+          <div className={styles.editAside}>
+            <p className={styles.lineEyebrow}>{t('home.edit.eyebrow', { store: store.name })}</p>
+            <svg className={styles.quoteMark} viewBox="0 0 48 40" aria-hidden="true" focusable="false">
+              <path d="M20 4C10 8 4 16 4 26c0 6 4 10 9 10s8-4 8-8-3-8-8-8c-1 0-2 0-2 .2C12 14 16 9 22 6zM44 4c-10 4-16 12-16 22 0 6 4 10 9 10s8-4 8-8-3-8-8-8c-1 0-2 0-2 .2C36 14 40 9 46 6z" />
+            </svg>
+          </div>
+          <div className={styles.editMain}>
+            <h2 className={styles.editTitle}>
+              {t('home.edit.title')}
+              <em className={styles.editAccent}>{t('home.edit.accent')}</em>
+            </h2>
+            <div className={styles.editFoot}>
+              <p className={styles.editBody}>{t('home.edit.body', { store: store.name })}</p>
+              <Link href="/about/" className={styles.inkLink}>
+                {t('home.edit.more', { store: store.name })}
+                <Arrow />
+              </Link>
+            </div>
           </div>
         </div>
-        <div className={styles.storyCopy}>
-          <p className={styles.eyebrow}>{t('home.story.eyebrow')}</p>
-          <h2 className={styles.storyTitle}>
-            {t('home.story.title')} <em className={styles.accent}>{t('home.story.accent')}</em>
-          </h2>
-          <p className={styles.lead}>{t('home.story.lead')}</p>
-          <p className={styles.body}>{t('home.story.body')}</p>
-          <Link href="/collections/all/" className={styles.button}>
-            {t('home.story.more')}
-          </Link>
-        </div>
       </section>
-      {groups.length ? (
-        <section className={styles.range}>
-          <div className={styles.rangeInner}>
-            <SectionHeading eyebrow={t('home.range.eyebrow')} title={t('home.range.title')} />
-            <ul className={styles.rangeGrid}>
-              {groups.map((group, index) => {
-                const at = categories.findIndex((c) => c.href === group.href)
-                const match = categories[at]
-                return (
-                  <li key={group.id} className={styles.rangeCard}>
-                    <Link href={group.href} className={cx(styles.rangeHead, art.art, paintOf(at < 0 ? index : at))}>
-                      {match?.image ? <Image image={match.image} alt="" ratio={4 / 3} sizes="(min-width: 900px) 25vw, 100vw" className={styles.tileImage} /> : null}
-                      <span className={styles.rangeFrame} />
-                      <span className={styles.rangeNumber}>{String(index + 1).padStart(2, '0')}</span>
-                      <span className={styles.rangeName}>{group.label}</span>
-                    </Link>
-                    <ul className={styles.rangeLinks}>
-                      {group.children.map((child) => (
-                        <li key={child.id}>
-                          <Link href={child.href} className={styles.rangeLink}>
-                            {child.label}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                    <Link href={group.href} className={styles.rangeAll}>
-                      {t('home.range.shopAll', { name: group.label })}
-                      <span className={styles.rangeAllIcon}>
-                        <ArrowIcon />
-                      </span>
-                    </Link>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-        </section>
-      ) : null}
-      <section className={cx(styles.signup, art.art, art.sand)}>
-        {signupImage ? <Image image={signupImage} alt="" ratio={16 / 9} sizes="100vw" className={cx(styles.cover, styles.signupImage)} /> : null}
-        <div className={styles.signupInner}>
-          <p className={styles.signupEyebrow}>{t('home.signup.eyebrow')}</p>
-          <h2 className={styles.signupTitle}>{t('home.signup.title')}</h2>
-          <p className={styles.signupBody}>{t('home.signup.body')}</p>
-          <Link href="/register/" className={styles.taupeButton}>
-            {t('home.signup.action')}
-          </Link>
-        </div>
-      </section>
+      <Categories collections={collections} busy={status === 'loading'} />
+      <Featured collection={featured} />
+      <Arrivals />
+      <Campaign />
+      <Scents collection={scent} />
+      <Detail />
+      <Newsletter />
     </Layout>
   )
 }

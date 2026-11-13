@@ -4,24 +4,25 @@
   },
   "card": {
     "from": "From",
-    "soldOut": "Sold out",
-    "noPicture": "No picture yet",
+    "soldOut": "Out of stock",
+    "noPicture": "Image coming soon",
     "view": "View details"
   },
   "listing": {
     "heading": "Products",
-    "showing": "{count, plural, one {Showing # product} other {Showing # products}}",
+    "showing": "Showing {count, plural, one {# product} other {# products}}",
     "filters": "Filters",
     "filtersShown": "Hide filters",
-    "clear": "Clear filters",
+    "clear": "Clear all",
     "remove": "Remove filter {name}",
     "sort": "Sort",
     "sorts": {
       "featured": "Featured",
       "newest": "Newest",
-      "priceLow": "Price, low to high",
-      "priceHigh": "Price, high to low",
-      "name": "Name"
+      "priceLow": "Price: low to high",
+      "priceHigh": "Price: high to low",
+      "name": "Name: A to Z",
+      "nameDesc": "Name: Z to A"
     },
     "price": "Price",
     "loadingMore": "Loading more products…",
@@ -31,11 +32,18 @@
     "loading": "Loading products",
     "failed": "We couldn't load these products",
     "failedLead": "Check your connection and try again.",
-    "retry": "Try again"
+    "retry": "Try again",
+    "priceRange": "Price range",
+    "availability": "Availability",
+    "inStockOnly": "In stock only",
+    "total": "{count, plural, one {# product} other {# products}}",
+    "view": "View",
+    "grid": "Grid",
+    "list": "List"
   },
   "collection": {
-    "all": "All products",
-    "allLead": "Everything in the shop.",
+    "all": "Shop All",
+    "allLead": "Every piece in the collection, in one place.",
     "loading": "Loading the collection",
     "missing": "We can't find that collection",
     "missingLead": "It may have moved or been taken down.",
@@ -45,14 +53,16 @@
     "home": "Go to the home page"
   },
   "search": {
-    "title": "Search the shop",
-    "lead": "Find a product by its name or type.",
-    "results": "Results for \"{query}\"",
+    "title": "Search",
+    "lead": "Discover products that match your style.",
+    "results": "Results for “{query}”",
     "label": "Search products",
     "placeholder": "What are you looking for?",
     "button": "Search",
-    "none": "No products match \"{query}\"",
-    "noneLead": "Check the spelling, try a shorter word, or browse a collection."
+    "none": "No products match “{query}”",
+    "noneLead": "Check the spelling, try a shorter word, or browse a collection.",
+    "crumb": "Search",
+    "browse": "Browse the collections"
   },
   "product": {
     "loading": "Loading the product",
@@ -77,7 +87,6 @@
     "goToCart": "Go to cart",
     "download": "A download: {times, plural, one {# download} other {# downloads}} within {days, plural, one {# day} other {# days}} of paying.",
     "downloadPlain": "A download, ready once you've paid.",
-    "service": "A service: we'll be in touch to arrange it.",
     "gift": {
       "name": "Recipient's name",
       "email": "Recipient's email",
@@ -88,7 +97,15 @@
       "sendHintExpiry": "We email it that morning. Leave it empty to send it now. It can be used for {months, plural, one {# month} other {# months}} after it's sent.",
       "add": "Add gift card to cart",
       "needed": "Add the recipient's name and email to add this gift card."
-    }
+    },
+    "relatedEyebrow": "Complete the look",
+    "care": {
+      "shipping": "Shipping policy",
+      "returns": "Returns & refunds",
+      "secure": "Secure checkout",
+      "help": "Questions? Contact us"
+    },
+    "service": "A service: we'll be in touch to arrange it."
   },
   "cart": {
     "title": "Your cart",

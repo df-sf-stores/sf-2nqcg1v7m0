@@ -1,37 +1,12 @@
-.menu {
-  display: contents;
-}
+/* The header's navigation: a centred row with mega panels on wide screens, a menu button and drawer on narrow ones. */
 
-.toggle {
-  display: inline-flex;
-  min-width: 44px;
-  height: 44px;
+.nav {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 0;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-  order: 2;
+  order: -1;
 }
 
-.toggle:focus-visible {
-  outline: 2px solid currentcolor;
-  outline-offset: 2px;
-}
-
-.icon {
-  width: 22px;
-  height: 22px;
-  fill: none;
-  stroke: currentcolor;
-  stroke-linecap: round;
-  stroke-width: 1.6;
-}
-
-.label {
+.hidden {
   position: absolute;
   overflow: hidden;
   width: 1px;
@@ -40,25 +15,691 @@
   white-space: nowrap;
 }
 
-.panel {
+.burger {
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ivory);
+  cursor: pointer;
+}
+
+.burgerIcon,
+.searchIcon {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentcolor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+.searchIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.row {
   display: none;
 }
 
-.open {
-  display: block;
-  flex-basis: 100%;
-  order: 3;
+.rowList {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px clamp(14px, 2.2vw, 34px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-@media (min-width: 900px) {
-  .toggle {
+.rowItem {
+  display: flex;
+  align-items: center;
+}
+
+.rowLink {
+  position: relative;
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: rgb(247 245 240 / 88%);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color 0.25s ease;
+}
+
+.rowLink::after {
+  position: absolute;
+  right: 0;
+  bottom: 8px;
+  left: 0;
+  height: 1px;
+  background: var(--gold);
+  content: '';
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.3s ease;
+}
+
+.rowLink:hover,
+.rowLinkOn {
+  color: var(--gold-hi);
+}
+
+.rowLink:hover::after,
+.rowLinkOn::after {
+  transform: scaleX(1);
+}
+
+/* The panel opens on hover; the chevron is for keyboards, shown only while it has focus, as in the reference. */
+.rowToggle {
+  position: absolute;
+  display: inline-flex;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  clip-path: inset(50%);
+  color: var(--gold);
+  cursor: pointer;
+}
+
+.rowToggle:focus-visible {
+  position: static;
+  width: 16px;
+  height: 28px;
+  clip-path: none;
+}
+
+.chevron {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: currentcolor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+  transition: transform 0.25s ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.arrow {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentcolor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+  transition: transform 0.25s ease;
+}
+
+/* Mega panel: ivory, under the header, the store's collections as picture tiles. */
+
+.mega {
+  position: absolute;
+  top: calc(100% + 1px);
+  left: 50%;
+  display: none;
+  box-sizing: border-box;
+  width: min(1180px, calc(100% - 48px));
+  padding: 28px 32px 32px;
+  background: var(--paper);
+  box-shadow: 0 30px 60px rgb(8 13 27 / 35%);
+  color: var(--ink);
+  transform: translateX(-50%);
+}
+
+.megaHead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--taupe-text);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.megaTitle {
+  margin: 4px 0 2px;
+  font-family: var(--heading-font);
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.megaLead {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.megaAll,
+.megaMore {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid currentcolor;
+  color: var(--ink);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.megaAll:hover,
+.megaMore:hover {
+  color: var(--taupe-text);
+}
+
+.megaAll:hover .arrow,
+.megaMore:hover .arrow,
+.tile:hover .arrow,
+.feature:hover .arrow {
+  transform: translateX(3px);
+}
+
+.tiles {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tile {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  height: 140px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px;
+  background: var(--picture-alt);
+  color: var(--ivory);
+  text-decoration: none;
+}
+
+.tileImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.tile:hover .tileImage {
+  transform: scale(1.05);
+}
+
+.tileShade,
+.featureShade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(8 13 27 / 0%) 35%, rgb(8 13 27 / 78%));
+}
+
+.tileName {
+  position: relative;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.tile .arrow {
+  position: relative;
+}
+
+.megaBody {
+  display: grid;
+  align-items: stretch;
+  gap: 32px;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  margin-top: 24px;
+}
+
+.megaLinksHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.megaSub {
+  margin: 0;
+  font-family: var(--heading-font);
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.megaList {
+  display: grid;
+  gap: 0 24px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.megaLink {
+  display: flex;
+  min-height: 36px;
+  align-items: center;
+  border-bottom: 1px solid rgb(11 18 34 / 6%);
+  color: var(--ink-soft);
+  font-size: 13.5px;
+  text-decoration: none;
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.megaLink:hover {
+  color: var(--taupe-text);
+  transform: translateX(4px);
+}
+
+.feature {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  min-height: 150px;
+  align-items: flex-end;
+  background: var(--night);
+  color: var(--ivory);
+  text-decoration: none;
+}
+
+.featureImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  transition: transform 0.6s ease;
+}
+
+.feature:hover .featureImage {
+  transform: scale(1.04);
+}
+
+.featureCopy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 20px;
+}
+
+.featureEyebrow {
+  color: var(--gold-hi);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.featureTitle {
+  font-family: var(--heading-font);
+  font-size: 26px;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.featureCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+/* Drawer: night, under the header, the full height of the screen. */
+
+.drawer {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  display: none;
+  overflow-y: auto;
+  height: calc(100vh - 64px);
+  box-sizing: border-box;
+  padding: 12px 20px 40px;
+  border-top: 1px solid var(--night-line);
+  background: var(--night);
+  overscroll-behavior: contain;
+}
+
+.drawerOpen {
+  display: block;
+}
+
+.drawerList,
+.drawerTools,
+.drawerSub {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.drawerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--night-line);
+}
+
+.drawerList > li > .drawerLink {
+  border-bottom: 1px solid var(--night-line);
+}
+
+.drawerLink {
+  display: flex;
+  min-height: 54px;
+  flex: 1;
+  align-items: center;
+  color: var(--ivory);
+  font-family: var(--heading-font);
+  font-size: 22px;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.drawerLink:hover,
+.drawerSubLink:hover,
+.drawerTool:hover {
+  color: var(--gold-hi);
+}
+
+.drawerToggle {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--gold);
+  cursor: pointer;
+}
+
+.drawerToggle .chevron {
+  width: 16px;
+  height: 16px;
+}
+
+.drawerSub {
+  padding: 6px 0 12px 14px;
+  border-bottom: 1px solid var(--night-line);
+}
+
+.drawerSubLink {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  color: var(--mist);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.drawerTools {
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 28px;
+}
+
+.drawerTool {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  color: var(--mist);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+/* Search: a magnifier in the tools, a full-width bar under the header. */
+
+.search {
+  display: flex;
+}
+
+.searchPanel {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  display: none;
+  border-top: 1px solid var(--night-line);
+  background: var(--night-head);
+  box-shadow: 0 24px 40px rgb(8 13 27 / 35%);
+}
+
+.searchPanelOpen {
+  display: block;
+}
+
+.searchInner {
+  box-sizing: border-box;
+  width: min(100%, 760px);
+  margin-inline: auto;
+  padding: 20px;
+}
+
+.searchField {
+  position: relative;
+  display: flex;
+  min-height: 52px;
+  box-sizing: border-box;
+  align-items: center;
+  gap: 12px;
+  padding: 0 4px 0 0;
+  border-bottom: 1px solid rgb(247 245 240 / 35%);
+  color: var(--mist);
+  font-size: 16px;
+}
+
+.searchField label {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.searchField input {
+  min-width: 0;
+  flex: 1;
+  padding: 10px 0;
+  border: 0;
+  background: transparent;
+  color: var(--ivory);
+  font-family: var(--heading-font);
+  font-size: 24px;
+  outline: none;
+}
+
+.searchField input::placeholder {
+  color: rgb(170 180 197 / 70%);
+}
+
+.searchField button {
+  min-height: 38px;
+  padding: 0 18px;
+  border: 0;
+  background: var(--gold);
+  color: var(--night);
+  cursor: pointer;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.searchField button:hover {
+  background: var(--gold-hi);
+}
+
+.searchField ul {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 8px);
+  right: 0;
+  left: 0;
+  margin: 0;
+  padding: 6px;
+  background: var(--surface);
+  box-shadow: 0 16px 40px rgb(8 13 27 / 30%);
+  list-style: none;
+}
+
+.searchField li {
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.searchField li:hover,
+.searchField li[aria-selected='true'] {
+  background: var(--soft);
+}
+
+.searchField li:last-child {
+  padding: 10px 12px;
+  border-top: 1px solid var(--line);
+  color: var(--taupe-text);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.searchField li a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.searchField li img {
+  width: 44px;
+  height: 54px;
+  flex-shrink: 0;
+  background: var(--soft);
+  object-fit: cover;
+}
+
+.searchField li span {
+  flex: 1;
+  font-family: var(--heading-font);
+  font-size: 17px;
+}
+
+.searchField p {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 8px);
+  right: 0;
+  left: 0;
+  margin: 0;
+  padding: 14px 16px;
+  background: var(--surface);
+  color: var(--muted);
+}
+
+/* Not display: none, so screen readers still announce "No products match" when the status fills. */
+.searchField p:empty {
+  padding: 0;
+}
+
+.burger:focus-visible,
+.rowLink:focus-visible,
+.rowToggle:focus-visible,
+.drawerLink:focus-visible,
+.drawerToggle:focus-visible,
+.drawerSubLink:focus-visible,
+.drawerTool:focus-visible,
+.feature:focus-visible,
+.tile:focus-visible {
+  outline: 1px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.megaAll:focus-visible,
+.megaMore:focus-visible,
+.megaLink:focus-visible {
+  outline: 1px solid var(--taupe-text);
+  outline-offset: 3px;
+}
+
+@media (min-width: 640px) {
+  .drawer {
+    height: calc(100vh - 64px);
+  }
+}
+
+@media (min-width: 1100px) {
+  .nav {
+    flex: 1;
+    justify-content: center;
+    order: 0;
+  }
+
+  .burger,
+  .drawer,
+  .drawerOpen {
     display: none;
   }
 
-  .panel,
-  .open {
+  .row {
     display: block;
-    flex-basis: auto;
-    order: 0;
+  }
+
+  .mega {
+    display: block;
   }
 }

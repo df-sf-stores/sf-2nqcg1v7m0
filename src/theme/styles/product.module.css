@@ -79,22 +79,23 @@
 }
 
 .badge {
-  padding: 3px 10px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--surface);
-  font-size: 12px;
-  font-weight: 600;
+  padding: 4px 9px;
+  background: var(--night);
+  color: var(--ivory);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
 }
 
 .title,
 .loadingTitle {
   margin: 0;
   font-family: var(--heading-font);
-  font-size: 28px;
-  font-weight: var(--heading-weight);
-  letter-spacing: var(--heading-spacing);
-  line-height: 1.15;
+  font-size: 34px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.08;
   overflow-wrap: anywhere;
   text-transform: var(--heading-case);
 }
@@ -119,12 +120,13 @@
 
 .priceTag {
   display: inline-block;
-  --df-price-size: 20px;
+  --df-price-size: 22px;
   --df-sealed-size: 13px;
+  --df-sealed-color: var(--taupe-text);
 }
 
 .priceTag::part(amount) {
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .priceTag::part(was) {
@@ -301,8 +303,67 @@
 .related {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding-top: 40px;
+  gap: 28px;
+  padding-top: 48px;
+}
+
+.relatedHead {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Where to read about delivery, returns and paying, as four quiet links under the product. */
+.service {
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 48px 0 0;
+  padding: 0;
+  border-block: 1px solid var(--line);
+  list-style: none;
+}
+
+.serviceLink {
+  display: flex;
+  min-height: 64px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--ink-soft);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.25s ease;
+}
+
+.serviceLink:hover {
+  color: var(--taupe-text);
+}
+
+.serviceLink:focus-visible {
+  outline: 1px solid var(--focus);
+  outline-offset: -3px;
+}
+
+.serviceIcon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: var(--taupe);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+@media (min-width: 900px) {
+  .service {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 .thumb:focus-visible,
@@ -323,11 +384,11 @@
   }
 
   .title {
-    font-size: 32px;
+    font-size: 44px;
   }
 
   .related {
-    padding-top: 56px;
+    padding-top: 72px;
   }
 }
 

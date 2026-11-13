@@ -11,10 +11,11 @@
 .title {
   margin: 0;
   font-family: var(--heading-font);
-  font-size: 30px;
-  font-weight: var(--heading-weight);
-  letter-spacing: var(--heading-spacing);
-  text-transform: var(--heading-case);
+  font-size: 40px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+  text-transform: uppercase;
 }
 
 .lead,
@@ -99,8 +100,8 @@
   min-height: 48px;
   box-sizing: border-box;
   padding: 0 14px;
-  border: 1px solid var(--line);
-  border-radius: calc(var(--radius) - 4px);
+  border: 1px solid var(--field-line);
+  border-radius: 0;
   background: var(--surface);
   color: var(--ink);
   font: inherit;
@@ -449,4 +450,100 @@
 .wishActions > p {
   flex-basis: 100%;
   margin: 0;
+}
+
+/* Sign in and create account: the night panel beside the form. */
+
+.frame {
+  display: grid;
+  min-height: calc(100svh - 64px);
+}
+
+.panel {
+  display: none;
+  background:
+    radial-gradient(120% 80% at 0% 100%, rgb(205 166 79 / 12%), transparent 60%),
+    linear-gradient(160deg, var(--night) 0%, var(--night-2) 100%);
+  color: var(--ivory);
+}
+
+.panelInner {
+  display: flex;
+  box-sizing: border-box;
+  height: 100%;
+  max-width: 520px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 28px;
+  margin-left: auto;
+  padding: 64px 56px;
+}
+
+.panelLogo {
+  display: block;
+  width: auto;
+  max-width: 200px;
+  height: 96px;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.panelLead {
+  max-width: 34ch;
+  margin: 0;
+  color: rgb(247 245 240 / 85%);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.perks {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 12px 0 0;
+  padding: 24px 0 0;
+  border-top: 1px solid var(--night-line);
+  list-style: none;
+}
+
+.perk {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.perkTitle {
+  color: var(--gold);
+  font-family: var(--heading-font);
+  font-size: 22px;
+}
+
+.perkBody {
+  color: var(--mist);
+  font-size: 12px;
+}
+
+.formSide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 0 48px;
+}
+
+.formSide .auth {
+  width: min(100%, 460px);
+}
+
+@media (min-width: 900px) {
+  .frame {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .panel {
+    display: block;
+  }
+
+  .formSide {
+    padding: 48px 32px;
+  }
 }

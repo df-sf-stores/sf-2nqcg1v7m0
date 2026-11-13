@@ -1,4 +1,4 @@
-import { Breadcrumbs, LegalNotices, Link, Price, ProductStory, RichText, SizeChart, useProduct, useStorefront } from '@dripfunnel/storefront-core/theme'
+import { Breadcrumbs, LegalNotices, Link, Price, ProductStory, RichText, SizeChart, useProduct, useProducts, useStorefront } from '@dripfunnel/storefront-core/theme'
 import { BuyButtons } from '../components/interactive/BuyButtons'
 import { Gallery } from '../components/interactive/Gallery'
 import { Options } from '../components/interactive/Options'
@@ -14,6 +14,8 @@ export const ProductPage = () => {
   const { store, locale, t } = useStorefront()
   const page = useProduct()
   const product = page.product
+  // A product the merchant linked to none still shows others: the store's newest, this one left out.
+  const newest = useProducts({ sort: 'newest', first: 9 })
   if (page.status === 'missing' || page.status === 'error' || !product) {
     return (
       <Layout>
@@ -41,6 +43,7 @@ export const ProductPage = () => {
     )
   }
   const firstMissing = page.missing[0]
+  const related = (product.related.length ? product.related : newest.products.filter((p) => p.href !== product.href)).slice(0, 4)
   const specs = product.specs.filter((s) => s.versionId === null || s.versionId === page.version?.id)
   return (
     <Layout>
@@ -120,11 +123,48 @@ export const ProductPage = () => {
             </div>
           </div>
         </div>
+        <ul className={styles.service}>
+          <li>
+            <Link href="/policies/shipping/" className={styles.serviceLink}>
+              <svg className={styles.serviceIcon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M3 7h11v9H3zM14 10h4l3 3v3h-7M7.5 19a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM17.5 19a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+              </svg>
+              {t('shop.product.care.shipping')}
+            </Link>
+          </li>
+          <li>
+            <Link href="/policies/returns/" className={styles.serviceLink}>
+              <svg className={styles.serviceIcon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4" />
+              </svg>
+              {t('shop.product.care.returns')}
+            </Link>
+          </li>
+          <li>
+            <Link href="/policies/privacy/" className={styles.serviceLink}>
+              <svg className={styles.serviceIcon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 3l7 3v5c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6zM9 12l2 2 4-4" />
+              </svg>
+              {t('shop.product.care.secure')}
+            </Link>
+          </li>
+          <li>
+            <Link href="/contact/" className={styles.serviceLink}>
+              <svg className={styles.serviceIcon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M4 5h16v11H8l-4 4z" />
+              </svg>
+              {t('shop.product.care.help')}
+            </Link>
+          </li>
+        </ul>
         <ProductStory product={product} versionId={page.version?.id ?? null} className={story.aplus} classes={story} />
-        {product.related.length ? (
+        {related.length ? (
           <section className={styles.related}>
-            <h2 className={shop.heading}>{t('shop.product.related')}</h2>
-            <ProductGrid products={product.related.slice(0, 4)} wide />
+            <div className={styles.relatedHead}>
+              <p className={shop.eyebrow}>{t('shop.product.relatedEyebrow')}</p>
+              <h2 className={shop.heading}>{t('shop.product.related')}</h2>
+            </div>
+            <ProductGrid products={related} wide />
           </section>
         ) : null}
       </section>

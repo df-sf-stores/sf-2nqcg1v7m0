@@ -1,446 +1,480 @@
-/* Shared type */
+/* About and Contact: editorial pages under the ivory page band. */
+
+.cover {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.arrow {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentcolor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+  transition: transform 0.3s ease;
+}
 
 .eyebrow {
-  margin: 0;
-  color: var(--accent);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-}
-
-.heading {
-  margin: 0;
-  font-family: var(--heading-font);
-  font-size: 30px;
-  font-weight: var(--heading-weight);
-  line-height: 1.15;
-  text-wrap: balance;
-}
-
-.accent {
-  color: var(--taupe-text);
-}
-
-.lead {
-  margin: 0;
-  color: var(--muted);
-  font-size: 17px;
-  line-height: 1.75;
-}
-
-.body {
-  margin: 0;
-  color: var(--muted);
-  font-size: 15px;
-  line-height: 1.75;
-}
-
-/* Hero: charcoal with a faint kolam dot grid */
-
-.hero {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: 56px 16px;
-  background:
-    radial-gradient(rgb(179 165 147 / 25%) 1px, transparent 1.6px) 0 0 / 22px 22px,
-    var(--accent);
-  color: var(--accent-ink);
-  text-align: center;
-}
-
-.heroEyebrow {
+  gap: 14px;
   margin: 0;
-  color: var(--taupe);
-  font-size: 12px;
+  color: var(--taupe-text);
+  font-size: 11px;
+  font-weight: 700;
   letter-spacing: 0.3em;
   text-transform: uppercase;
 }
 
-.heroTitle {
-  margin: 12px 0 0;
-  font-family: var(--heading-font);
-  font-size: 32px;
-  font-weight: var(--heading-weight);
-  line-height: 1.15;
-  overflow-wrap: anywhere;
-  text-wrap: balance;
+.eyebrow::before {
+  width: 40px;
+  height: 1px;
+  background: currentcolor;
+  content: '';
 }
 
-.heroOrnament {
-  display: block;
-  width: min(100%, 192px);
-  height: 10px;
-  margin-top: 20px;
-  color: var(--taupe);
+.inkLink,
+.ghostButton {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 10px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.heroLead {
-  max-width: 42rem;
-  margin: 20px 0 0;
-  color: rgb(250 249 247 / 80%);
-  font-size: 15px;
-  line-height: 1.7;
-  text-wrap: balance;
+.inkLink {
+  padding-bottom: 5px;
+  border-bottom: 1px solid currentcolor;
+  color: var(--ink);
 }
 
-/* Who we are */
+.inkLink:hover {
+  color: var(--taupe-text);
+}
+
+.ghostButton {
+  min-height: 52px;
+  padding: 0 28px;
+  border: 1px solid rgb(247 245 240 / 55%);
+  color: var(--ivory);
+  transition:
+    border-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.ghostButton:hover {
+  border-color: var(--gold);
+  color: var(--gold-hi);
+}
+
+.inkLink:hover .arrow,
+.ghostButton:hover .arrow,
+.helpLink:hover .arrow,
+.followLink:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* Story */
 
 .story {
   display: grid;
   box-sizing: border-box;
-  width: min(100%, 1240px);
+  width: min(100%, 1180px);
   align-items: center;
-  gap: 56px;
-  grid-template-columns: minmax(0, 1fr);
+  gap: 40px;
   margin-inline: auto;
-  padding: 64px 16px;
+  padding: clamp(64px, 9vw, 130px) 20px;
 }
 
-.storyPictures {
-  position: relative;
-  width: min(100%, 448px);
-  margin-inline: auto;
-}
-
-/* The temple-arch frame, offset behind the picture. */
-.storyPictures::before {
-  position: absolute;
-  inset: 0;
-  border: 1px solid rgb(179 165 147 / 60%);
-  border-radius: 999px 999px 12px 12px;
-  content: '';
-  transform: translate(12px, 12px);
-}
-
-.arch {
+.storyPicture {
   position: relative;
   overflow: hidden;
   aspect-ratio: 4 / 5;
-  border-radius: 999px 999px 12px 12px;
-  box-shadow: 0 0 0 1px rgb(179 165 147 / 40%);
-}
-
-.detail {
-  position: absolute;
-  bottom: -24px;
-  left: -16px;
-  overflow: hidden;
-  width: 112px;
-  height: 112px;
-  border: 4px solid var(--bg);
-  border-radius: 999px;
-  box-shadow:
-    0 0 0 1px rgb(179 165 147 / 50%),
-    0 12px 28px rgb(42 39 37 / 18%);
+  background: var(--night);
 }
 
 .storyCopy {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
 }
 
-/* Our promise */
+.heading {
+  margin: 0;
+  font-family: var(--heading-font);
+  font-size: clamp(38px, 5vw, 60px);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.accent {
+  display: block;
+  color: var(--taupe-text);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.lead {
+  max-width: 48ch;
+  margin: 0;
+  color: var(--ink-soft);
+  font-family: var(--heading-font);
+  font-size: 22px;
+  font-style: italic;
+  line-height: 1.45;
+}
+
+.body {
+  max-width: 54ch;
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+/* Promise: a night band of three numbered values. */
 
 .promise {
-  padding: 64px 16px;
-  border-block: 1px solid rgb(179 165 147 / 25%);
-  background:
-    radial-gradient(rgb(179 165 147 / 30%) 1px, transparent 1.6px) 0 0 / 22px 22px,
-    rgb(242 239 234 / 40%);
+  background: var(--night);
+  color: var(--ivory);
+}
+
+.promiseInner {
+  display: grid;
+  box-sizing: border-box;
+  width: min(100%, 1180px);
+  gap: 48px;
+  margin-inline: auto;
+  padding: clamp(72px, 9vw, 130px) 20px;
+}
+
+.promise .eyebrow {
+  color: var(--gold);
 }
 
 .promiseHead {
   display: flex;
-  max-width: 42rem;
   flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  margin: 0 auto;
-  text-align: center;
+  gap: 20px;
+}
+
+.promiseTitle {
+  margin: 0;
+  font-family: var(--heading-font);
+  font-size: clamp(38px, 5vw, 60px);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.promiseBody {
+  max-width: 42ch;
+  margin: 0;
+  color: var(--mist);
+  line-height: 1.75;
 }
 
 .values {
   display: grid;
-  max-width: 1080px;
-  gap: 24px;
-  grid-template-columns: minmax(0, 1fr);
-  margin: 48px auto 0;
+  gap: 0;
+  margin: 0;
   padding: 0;
+  border-top: 1px solid var(--night-line);
+  counter-reset: value;
   list-style: none;
 }
 
 .value {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding: 24px;
-  border: 1px solid rgb(179 165 147 / 30%);
-  border-radius: 16px;
-  background: var(--surface);
-  box-shadow: 0 1px 2px rgb(38 34 31 / 6%);
-  text-align: center;
-  transition: transform 0.3s ease;
+  display: grid;
+  gap: 6px 24px;
+  grid-template-columns: 48px minmax(0, 1fr);
+  padding: 26px 0;
+  border-bottom: 1px solid var(--night-line);
+  counter-increment: value;
 }
 
-.value:hover {
-  transform: translateY(-4px);
-}
-
-.valueIcon {
-  display: inline-flex;
-  width: 56px;
-  height: 56px;
-  box-sizing: border-box;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  background: var(--soft);
-  box-shadow: 0 0 0 1px rgb(179 165 147 / 40%);
-  color: var(--accent);
-}
-
-.valueIcon svg,
-.visitIcon svg {
-  width: 24px;
-  height: 24px;
-  fill: none;
-  stroke: currentcolor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.75;
+.value::before {
+  color: var(--gold);
+  content: counter(value, decimal-leading-zero);
+  font-family: var(--heading-font);
+  font-size: 20px;
+  font-style: italic;
+  grid-row: span 2;
 }
 
 .valueTitle {
-  margin: 4px 0 0;
-  color: var(--accent);
+  margin: 0;
   font-family: var(--heading-font);
-  font-size: 20px;
-  font-weight: var(--heading-weight);
+  font-size: 26px;
+  font-weight: 400;
 }
 
 .valueBody {
   margin: 0;
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.6;
+  color: var(--mist);
+  font-size: 14.5px;
 }
 
-/* Visit our store */
+/* Find us */
 
 .visit {
-  padding: 64px 16px;
-}
-
-.visitCard {
-  display: grid;
-  overflow: hidden;
-  max-width: 900px;
-  grid-template-columns: minmax(0, 1fr);
-  margin: 0 auto;
-  border: 1px solid rgb(179 165 147 / 40%);
-  border-radius: 24px;
-  background: var(--surface);
-  box-shadow: 0 1px 2px rgb(38 34 31 / 6%);
-}
-
-.visitPanel {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding: 32px;
-  background:
-    radial-gradient(rgb(179 165 147 / 20%) 1px, transparent 1.6px) 0 0 / 22px 22px,
-    var(--accent);
-  color: var(--accent-ink);
-  text-align: center;
-}
-
-.visitIcon {
-  display: inline-flex;
-  width: 96px;
-  height: 96px;
   box-sizing: border-box;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  background: rgb(250 249 247 / 10%);
-  box-shadow: 0 0 0 1px rgb(179 165 147 / 60%);
-  color: var(--taupe);
-}
-
-.visitIcon svg {
-  width: 40px;
-  height: 40px;
-}
-
-.visitTitle {
-  margin: 0;
-  font-family: var(--heading-font);
-  font-size: 26px;
-  font-weight: var(--heading-weight);
-}
-
-.visitLead {
-  margin: 0;
-  color: rgb(250 249 247 / 75%);
-  font-size: 14px;
-}
-
-.visitDetails {
-  display: flex;
+  width: min(100%, 1180px);
   flex-direction: column;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 32px;
+  gap: 10px;
+  margin-inline: auto;
+  padding: 72px 20px;
 }
 
 .visitName {
-  margin: 0;
-  color: var(--accent);
+  margin: 10px 0 4px;
   font-family: var(--heading-font);
-  font-size: 20px;
-  font-weight: var(--heading-weight);
+  font-size: 32px;
 }
 
-.visitAddress {
-  margin: -8px 0 0;
-  color: var(--muted);
-  line-height: 1.7;
-}
-
-.contacts {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.visitLine {
   margin: 0;
-  padding: 0;
-  font-size: 14px;
-  list-style: none;
+  color: var(--ink-soft);
 }
 
-.contact {
-  overflow-wrap: anywhere;
-}
-
-.visitButton {
-  display: inline-flex;
-  min-height: 44px;
-  align-items: center;
-  padding: 0 20px;
-  border-radius: 999px;
-  background: var(--accent);
-  color: var(--accent-ink);
-  font-size: 14px;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.visitButton:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
-}
-
-/* Closing tagline */
+/* Closing band */
 
 .closing {
-  padding: 48px 16px;
-  background: var(--accent);
-  color: var(--accent-ink);
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  min-height: 460px;
+  align-items: flex-end;
+  isolation: isolate;
+  background: var(--night);
+  color: var(--ivory);
+}
+
+.closingPicture {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+}
+
+.closingShade {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(90deg, rgb(8 13 27 / 88%) 0%, rgb(8 13 27 / 40%) 60%, rgb(8 13 27 / 15%) 100%);
+}
+
+.closingCopy {
+  display: flex;
+  box-sizing: border-box;
+  width: min(100%, 1180px);
+  flex-direction: column;
+  gap: 28px;
+  margin-inline: auto;
+  padding: 72px 20px;
 }
 
 .closingText {
-  max-width: 900px;
-  margin: 0 auto;
+  max-width: 16ch;
+  margin: 0;
+  font-family: var(--heading-font);
+  font-size: clamp(40px, 6vw, 76px);
+  font-style: italic;
+  line-height: 1;
+}
+
+/* Contact */
+
+.contactGrid {
+  display: grid;
+  box-sizing: border-box;
+  width: min(100%, 1180px);
+  align-items: start;
+  gap: 40px;
+  margin-inline: auto;
+  padding: clamp(56px, 8vw, 110px) 20px;
+}
+
+.contactMain {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.details {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+
+.detailRow {
+  display: grid;
+  gap: 4px 24px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.term {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.value {
+  margin: 0;
   font-family: var(--heading-font);
   font-size: 24px;
-  font-style: italic;
-  text-align: center;
-  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.follow {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.followList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.followLink {
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  gap: 14px;
+  padding: 0 22px;
+  border: 1px solid var(--field-line);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition:
+    border-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.followLink:hover {
+  border-color: var(--taupe);
+  color: var(--taupe-text);
+}
+
+.helpCard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 36px 32px;
+  background: var(--night);
+  color: var(--ivory);
+}
+
+.helpEyebrow {
+  margin: 0;
+  color: var(--gold);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.helpTitle {
+  margin: 0 0 8px;
+  font-family: var(--heading-font);
+  font-size: 32px;
+  font-weight: 400;
+}
+
+.helpList {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--night-line);
+  list-style: none;
+}
+
+.helpLink {
+  display: flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--night-line);
+  color: rgb(247 245 240 / 88%);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.25s ease;
+}
+
+.helpLink:hover {
+  color: var(--gold-hi);
+}
+
+.inkLink:focus-visible,
+.followLink:focus-visible {
+  outline: 1px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.ghostButton:focus-visible,
+.helpLink:focus-visible {
+  outline: 1px solid var(--gold);
+  outline-offset: 3px;
 }
 
 @media (min-width: 640px) {
-  .values {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 768px) {
-  .story {
-    gap: 64px;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    padding: 96px 32px;
+  .story,
+  .promiseInner,
+  .visit,
+  .closingCopy,
+  .contactGrid {
+    padding-inline: 32px;
   }
 
-  .storyPictures::before {
-    transform: translate(16px, 16px);
-  }
-
-  .detail {
-    left: -32px;
-    width: 144px;
-    height: 144px;
-  }
-
-  .visitCard {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-  }
-
-  .visitPanel,
-  .visitDetails {
-    padding: 40px;
-  }
-
-  .visit {
-    padding: 96px 32px;
+  .detailRow {
+    grid-template-columns: 160px minmax(0, 1fr);
+    align-items: baseline;
   }
 }
 
 @media (min-width: 900px) {
-  .hero {
-    padding: 80px 32px;
+  .story {
+    gap: clamp(48px, 7vw, 110px);
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
   }
 
-  .heroTitle {
-    font-size: 48px;
-  }
-
-  .heroLead {
-    font-size: 16px;
-  }
-
-  .heading {
-    font-size: 36px;
-  }
-
-  .promise {
-    padding: 80px 32px;
+  .promiseInner {
+    gap: 80px;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
   }
 
   .closing {
-    padding: 56px 32px;
+    min-height: 560px;
   }
 
-  .closingText {
-    font-size: 30px;
+  .contactGrid {
+    gap: 64px;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.9fr);
   }
-}
-
-/* The store's name runs through these lines, and a long one wraps rather than widening the page. */
-.heroLead,
-.lead,
-.body,
-.visitName,
-.closingText {
-  overflow-wrap: anywhere;
-}
-
-.storyCopy,
-.visitDetails {
-  min-width: 0;
 }

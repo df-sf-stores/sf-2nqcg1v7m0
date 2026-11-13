@@ -1,11 +1,42 @@
 import type { ReactNode } from 'react'
-import { ConsentBanner, ConsentSettingsButton, Link, navigate, PoweredBy, PreviewBanner, SearchField, StoreLogo, useCart, useCollections, useMenu, useStorefront, useWishlist } from '@dripfunnel/storefront-core/theme'
-import { Menu } from './interactive/Menu'
-import { NavItem } from './interactive/NavItem'
+import { ConsentBanner, ConsentSettingsButton, Link, PoweredBy, PreviewBanner, StoreLogo, useCart, useCollections, useMenu, useStorefront, useWishlist } from '@dripfunnel/storefront-core/theme'
+import { HeaderSearch } from './interactive/HeaderSearch'
+import { SiteNav, type NavEntry } from './interactive/SiteNav'
+import { cx } from './cx'
+import { tidyName } from './tidyName'
 import styles from '../styles/layout.module.css'
 
-// The theme rules allow no URL encoding, so the characters that would break the query are dropped instead.
-const searchFor = (words: string) => navigate(`/search/?q=${words.replace(/[&+%#]/g, ' ').trim()}`)
+/** A social network's outline icon; any other network shows its name. */
+const SocialIcon = ({ network }: { network: string }) => {
+  if (network === 'instagram')
+    return (
+      <svg className={styles.socialIcon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <rect x="3.5" y="3.5" width="17" height="17" rx="4.5" />
+        <circle cx="12" cy="12" r="4" />
+        <circle cx="17.2" cy="6.8" r="0.6" />
+      </svg>
+    )
+  if (network === 'facebook')
+    return (
+      <svg className={styles.socialIcon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M14 8h3V4.5h-3c-2.2 0-3.8 1.7-3.8 3.9V11H8v3.5h2.2V21h3.5v-6.5h2.8L17 11h-3.3V8.6c0-.4.3-.6.6-.6z" />
+      </svg>
+    )
+  if (network === 'youtube')
+    return (
+      <svg className={styles.socialIcon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <rect x="2.5" y="5.5" width="19" height="13" rx="3.5" />
+        <path d="M10 9.2v5.6l4.8-2.8z" />
+      </svg>
+    )
+  if (network === 'x')
+    return (
+      <svg className={styles.socialIcon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M4 4l16 16M20 4L4 20" />
+      </svg>
+    )
+  return <span className={styles.socialWord}>{network.slice(0, 2)}</span>
+}
 
 export const Layout = ({ children }: { children: ReactNode }) => {
   const { store, t, mode, poweredBy } = useStorefront()
@@ -16,6 +47,13 @@ export const Layout = ({ children }: { children: ReactNode }) => {
   const { count } = useCart()
   const { count: wished } = useWishlist()
   const whatsapp = store.social.find((s) => s.network === 'whatsapp')
+  const social = store.social.filter((s) => s.network !== 'whatsapp')
+  // The merchant's menu leads the header; a store without one shows its collections.
+  const entries: NavEntry[] = menu.items.length
+    ? menu.items.map((item) => ({ id: item.id, label: item.label, href: item.href, children: item.children.map((c) => ({ id: c.id, label: c.label, href: c.href })) }))
+    : collections.map((c) => ({ id: c.id, label: tidyName(c.name), href: c.href, children: [] }))
+  const subLinks = menu.items.flatMap((item) => item.children)
+  const place = [store.address?.city, store.address?.region].filter((part): part is string => Boolean(part)).join(', ')
   return (
     <div className={styles.shell}>
       {mode === 'live' ? null : <PreviewBanner t={t} className={styles.preview} />}
@@ -24,16 +62,23 @@ export const Layout = ({ children }: { children: ReactNode }) => {
           <Link href="/" className={styles.brand}>
             <StoreLogo className={styles.logo} />
           </Link>
-          <SearchField label={t('common.tools.search')} placeholder={t('common.tools.searchPrompt')} button={t('common.tools.search')} value="" onSearch={searchFor} suggest={4} className={styles.search} />
+          <SiteNav items={entries} collections={collections} />
           <div className={styles.tools}>
-            <Link href="/account/" className={styles.account}>
+            <HeaderSearch className={styles.tool} />
+            <span className={styles.language}>
               <svg className={styles.icon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <circle cx="12" cy="8.5" r="3.8" />
-                <path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4s6.3 1.8 7.5 5.4" />
+                <circle cx="12" cy="12" r="8.5" />
+                <path d="M3.5 12h17M12 3.5c2.4 2.3 3.6 5.2 3.6 8.5s-1.2 6.2-3.6 8.5c-2.4-2.3-3.6-5.2-3.6-8.5s1.2-6.2 3.6-8.5z" />
               </svg>
-              <span className={styles.accountLabel}>{t('common.tools.account')}</span>
+              {t('common.tools.language')}
+            </span>
+            <Link href="/account/" className={styles.tool}>
+              <svg className={styles.icon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="8" r="3.6" />
+                <path d="M5 20c1.1-3.5 3.8-5.3 7-5.3s5.9 1.8 7 5.3" />
+              </svg>
+              <span className={styles.hidden}>{t('common.tools.account')}</span>
             </Link>
-            <span className={styles.divider} aria-hidden="true" />
             <Link href="/account/wishlist/" className={styles.tool}>
               <svg className={styles.icon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0112 7.3a4.3 4.3 0 017.5 2.5C19.5 15.4 12 20 12 20z" />
@@ -48,7 +93,7 @@ export const Layout = ({ children }: { children: ReactNode }) => {
             <Link href="/cart/" className={styles.tool}>
               <svg className={styles.icon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <path d="M5.5 8h13l-1 12h-11z" />
-                <path d="M9 8V6.5a3 3 0 016 0V8" />
+                <path d="M9 10V6.5a3 3 0 016 0V10" />
               </svg>
               <span className={styles.hidden}>{count > 0 ? t('common.tools.cartCount', { count }) : t('common.tools.cart')}</span>
               {count > 0 ? (
@@ -60,133 +105,150 @@ export const Layout = ({ children }: { children: ReactNode }) => {
           </div>
         </div>
       </header>
-      <div className={styles.navBar}>
-        <div className={styles.navInner}>
-          <Menu label={t('common.nav.menu')}>
-            <nav className={styles.nav} aria-label={t('common.nav.label')}>
-              <Link href="/" className={styles.navLink}>
-                {t('common.nav.home')}
-              </Link>
-              {menu.items.length ? (
-                menu.items.map((item) => <NavItem key={item.id} item={item} />)
-              ) : (
-                <>
-                  <Link href="/collections/all/" className={styles.navLink}>
-                    {t('common.nav.shopAll')}
-                  </Link>
-                  {collections.map((c) => (
-                    <Link key={c.id} href={c.href} className={styles.navLink}>
-                      {c.name}
-                    </Link>
-                  ))}
-                  <Link href="/about/" className={styles.navLink}>
-                    {t('common.nav.about')}
-                  </Link>
-                  <Link href="/contact/" className={styles.navLink}>
-                    {t('common.nav.contact')}
-                  </Link>
-                </>
-              )}
-            </nav>
-          </Menu>
-          <ul className={styles.chips}>
-            <li>
-              <Link href="/collections/all/" className={styles.chip}>
-                {t('common.nav.shopAll')}
-              </Link>
-            </li>
-            {collections.map((c) => (
-              <li key={c.id}>
-                <Link href={c.href} className={styles.chip}>
-                  {c.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
       <main className={styles.main}>{children}</main>
       <footer className={styles.footer}>
-        <div className={styles.columns}>
-          <div className={styles.about}>
-            <p className={styles.footerBrand}>{store.name}</p>
-            {store.tagline ? <p className={styles.tagline}>{store.tagline}</p> : null}
-            <p className={styles.note}>{store.description || t('common.footer.note')}</p>
-            {store.social.length ? (
-              <div className={styles.social}>
-                {store.social.map((s) => (
-                  <Link key={s.network} href={s.url} className={styles.socialLink}>
-                    {s.network}
-                  </Link>
-                ))}
-              </div>
-            ) : null}
-          </div>
-          <div className={styles.links}>
-            <h2 className={styles.heading}>{t('common.footer.shop')}</h2>
-            {menu.items.length ? (
-              menu.items.map((item) => (
-                <Link key={item.id} href={item.href} className={styles.footerLink}>
-                  {item.label}
-                </Link>
-              ))
-            ) : (
-              <Link href="/collections/all/" className={styles.footerLink}>
-                {t('common.footer.all')}
+        <p className={styles.watermark} aria-hidden="true">
+          {store.name}
+        </p>
+        <div className={styles.footerInner}>
+          <div className={styles.columns}>
+            <div className={styles.about}>
+              <Link href="/" className={styles.footerBrand}>
+                <StoreLogo className={styles.footerLogo} />
               </Link>
-            )}
-          </div>
-          <div className={styles.links}>
-            <h2 className={styles.heading}>{t('common.footer.help')}</h2>
-            <Link href="/collections/all/" className={styles.footerLink}>
-              {t('common.footer.all')}
-            </Link>
-            <Link href="/account/orders/" className={styles.footerLink}>
-              {t('common.footer.orders')}
-            </Link>
-            <Link href="/account/" className={styles.footerLink}>
-              {t('common.tools.account')}
-            </Link>
-            <Link href="/cart/" className={styles.footerLink}>
-              {t('common.tools.cart')}
-            </Link>
-            <Link href="/contact/" className={styles.footerLink}>
-              {t('common.nav.contact')}
-            </Link>
-            <Link href="/help/" className={styles.footerLink}>
-              {t('common.footer.faq')}
-            </Link>
-          </div>
-          <nav className={styles.links} aria-label={t('common.footer.legal')}>
-            <h2 className={styles.heading}>{t('common.footer.legal')}</h2>
-            <Link href="/about/" className={styles.footerLink}>
-              {t('common.nav.about')}
-            </Link>
-            <Link href="/policies/privacy/" className={styles.footerLink}>
-              {t('common.footer.privacy')}
-            </Link>
-            <Link href="/policies/returns/" className={styles.footerLink}>
-              {t('common.footer.returns')}
-            </Link>
-            <Link href="/policies/shipping/" className={styles.footerLink}>
-              {t('common.footer.shipping')}
-            </Link>
-            <Link href="/policies/terms/" className={styles.footerLink}>
-              {t('common.footer.terms')}
-            </Link>
-          </nav>
-          {store.contactEmail || store.contactPhone ? (
-            <div className={styles.links}>
-              <h2 className={styles.heading}>{t('common.footer.touch')}</h2>
-              {store.contactPhone ? <p className={styles.contact}>{store.contactPhone}</p> : null}
-              {store.contactEmail ? <p className={styles.contact}>{store.contactEmail}</p> : null}
+              <span className={styles.footerRule} aria-hidden="true" />
+              <p className={styles.note}>{store.tagline || store.description || t('common.footer.note')}</p>
+              {social.length ? (
+                <div className={styles.social}>
+                  {social.map((s) => (
+                    <Link key={s.network} href={s.url} className={styles.socialLink}>
+                      <SocialIcon network={s.network} />
+                      <span className={styles.hidden}>{t('common.footer.follow', { network: s.network })}</span>
+                    </Link>
+                  ))}
+                </div>
+              ) : null}
             </div>
-          ) : null}
+            <nav className={styles.links} aria-label={t('common.footer.shop')}>
+              <h2 className={styles.heading}>{t('common.footer.shop')}</h2>
+              <ul className={styles.linkList}>
+                {entries.map((entry) => (
+                  <li key={entry.id}>
+                    <Link href={entry.href} className={styles.footerLink}>
+                      {entry.label}
+                    </Link>
+                  </li>
+                ))}
+                <li>
+                  <Link href="/collections/all/" className={styles.footerLink}>
+                    {t('common.footer.all')}
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+            {subLinks.length ? (
+              <nav className={styles.links} aria-label={t('common.footer.collections')}>
+                <h2 className={styles.heading}>{t('common.footer.collections')}</h2>
+                <ul className={cx(styles.linkList, subLinks.length > 5 && styles.linkListSplit)}>
+                  {subLinks.map((link) => (
+                    <li key={link.id}>
+                      <Link href={link.href} className={styles.footerLink}>
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            ) : (
+              <nav className={styles.links} aria-label={t('common.footer.help')}>
+                <h2 className={styles.heading}>{t('common.footer.help')}</h2>
+                <ul className={cx(styles.linkList, styles.linkListSplit)}>
+                  <li>
+                    <Link href="/account/" className={styles.footerLink}>
+                      {t('common.tools.account')}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/account/orders/" className={styles.footerLink}>
+                      {t('common.footer.orders')}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/account/wishlist/" className={styles.footerLink}>
+                      {t('common.tools.wishlist')}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/cart/" className={styles.footerLink}>
+                      {t('common.tools.cart')}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/search/" className={styles.footerLink}>
+                      {t('common.tools.search')}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/help/" className={styles.footerLink}>
+                      {t('common.footer.faq')}
+                    </Link>
+                  </li>
+                </ul>
+              </nav>
+            )}
+            <nav className={styles.links} aria-label={t('common.footer.information')}>
+              <h2 className={styles.heading}>{t('common.footer.information')}</h2>
+              <ul className={styles.linkList}>
+                <li>
+                  <Link href="/contact/" className={styles.footerLink}>
+                    {t('common.nav.contact')}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/about/" className={styles.footerLink}>
+                    {t('common.nav.about')}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/policies/privacy/" className={styles.footerLink}>
+                    {t('common.footer.privacy')}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/policies/terms/" className={styles.footerLink}>
+                    {t('common.footer.terms')}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/policies/shipping/" className={styles.footerLink}>
+                    {t('common.footer.shipping')}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/policies/returns/" className={styles.footerLink}>
+                    {t('common.footer.returns')}
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          {place || store.contactEmail || store.contactPhone ? (
+          <ul className={styles.company}>
+            <li className={cx(styles.companyItem, styles.companyName)}>{store.name}</li>
+            {place ? <li className={styles.companyItem}>{place}</li> : null}
+            {store.contactEmail ? <li className={styles.companyItem}>{store.contactEmail}</li> : null}
+            {store.contactPhone ? <li className={styles.companyItem}>{store.contactPhone}</li> : null}
+          </ul>
+          ) : (
+            <span className={styles.footerEnd} aria-hidden="true" />
+          )}
         </div>
         <div className={styles.base}>
-          <p className={styles.copyright}>{t('common.footer.rights', { store: store.name })}</p>
-          <ConsentSettingsButton t={t} className={styles.cookies} />
-          <PoweredBy brand={poweredBy} t={t} className={styles.powered} />
+          <div className={styles.baseInner}>
+            <p className={styles.copyright}>{t('common.footer.rights', { store: store.name })}</p>
+            <ConsentSettingsButton t={t} className={styles.cookies} />
+            <PoweredBy brand={poweredBy} t={t} className={styles.powered} />
+          </div>
         </div>
       </footer>
       {whatsapp ? (
