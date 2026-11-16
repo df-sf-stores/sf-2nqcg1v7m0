@@ -86,7 +86,8 @@ export const PolicyPage = () => {
   const { store, t } = useStorefront()
   const { path } = useLocation()
   const kind = kinds.find((k) => path === `/policies/${k}/` || path === `/policies/${k}`)
-  const name = { store: storeName(store.name) }
+  // The store's name and the company's registered details, from their one source (content/en/company.json).
+  const name = { store: storeName(store.name), company: t('company.name'), place: t('company.place') }
   const pages: Record<Kind, { title: string; body: string; updated: string | null }> = {
     terms: { title: t('policies.terms.title'), body: t('policies.terms.body', name), updated: t('policies.terms.updated') },
     privacy: { title: t('policies.privacy.title'), body: t('policies.privacy.body', name), updated: t('policies.privacy.updated') },
