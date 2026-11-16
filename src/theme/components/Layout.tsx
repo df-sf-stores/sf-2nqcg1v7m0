@@ -1,10 +1,16 @@
 import type { ReactNode } from 'react'
-import { ConsentBanner, ConsentSettingsButton, Link, PoweredBy, PreviewBanner, StoreLogo, useCart, useCollections, useMenu, useStorefront, useWishlist } from '@dripfunnel/storefront-core/theme'
+import { ConsentBanner, Link, PoweredBy, PreviewBanner, StoreLogo, ThemeImage, useCart, useCollections, useMenu, useStorefront, useWishlist } from '@dripfunnel/storefront-core/theme'
 import { HeaderSearch } from './interactive/HeaderSearch'
 import { SiteNav, type NavEntry } from './interactive/SiteNav'
 import { cx } from './cx'
+import { storeName } from './storeName'
 import { tidyName } from './tidyName'
 import styles from '../styles/layout.module.css'
+
+type FooterLink = { href: string; label: string }
+
+/** The DripFunnel logo is 845 × 143 px. */
+const poweredRatio = 845 / 143
 
 /** A social network's outline icon; any other network shows its name. */
 const SocialIcon = ({ network }: { network: string }) => {
@@ -52,8 +58,21 @@ export const Layout = ({ children }: { children: ReactNode }) => {
   const entries: NavEntry[] = menu.items.length
     ? menu.items.map((item) => ({ id: item.id, label: item.label, href: item.href, children: item.children.map((c) => ({ id: c.id, label: c.label, href: c.href })) }))
     : collections.map((c) => ({ id: c.id, label: tidyName(c.name), href: c.href, children: [] }))
-  const subLinks = menu.items.flatMap((item) => item.children)
-  const place = [store.address?.city, store.address?.region].filter((part): part is string => Boolean(part)).join(', ')
+  // The footer's shop links: every collection the admin shows on the store (core leaves hidden ones out), then Shop All.
+  // A collection of the store's own at /collections/all/ is left to the Shop All link, so no address is listed twice.
+  const shopLinks: FooterLink[] = [
+    ...collections.filter((c) => c.href !== '/collections/all/').map((c) => ({ href: c.href, label: tidyName(c.name) })),
+    { href: '/collections/all/', label: t('common.footer.all') },
+  ]
+  const infoLinks: FooterLink[] = [
+    { href: '/contact/', label: t('common.nav.contact') },
+    { href: '/policies/privacy/', label: t('common.footer.privacy') },
+    { href: '/policies/terms/', label: t('common.footer.terms') },
+  ]
+  // The store's Site settings lead; the company's registered details fill in what they leave blank.
+  const place = [store.address?.city, store.address?.region].filter((part): part is string => Boolean(part)).join(', ') || t('company.place')
+  const email = store.contactEmail || t('company.email')
+  const name = storeName(store.name)
   return (
     <div className={styles.shell}>
       {mode === 'live' ? null : <PreviewBanner t={t} className={styles.preview} />}
@@ -131,123 +150,45 @@ export const Layout = ({ children }: { children: ReactNode }) => {
             </div>
             <nav className={styles.links} aria-label={t('common.footer.shop')}>
               <h2 className={styles.heading}>{t('common.footer.shop')}</h2>
-              <ul className={styles.linkList}>
-                {entries.map((entry) => (
-                  <li key={entry.id}>
-                    <Link href={entry.href} className={styles.footerLink}>
-                      {entry.label}
+              {/* A long list of collections runs in two columns rather than one tall one. */}
+              <ul className={cx(styles.linkList, shopLinks.length > 7 && styles.linkListSplit)}>
+                {shopLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className={styles.footerLink}>
+                      {link.label}
                     </Link>
                   </li>
                 ))}
-                <li>
-                  <Link href="/collections/all/" className={styles.footerLink}>
-                    {t('common.footer.all')}
-                  </Link>
-                </li>
               </ul>
             </nav>
-            {subLinks.length ? (
-              <nav className={styles.links} aria-label={t('common.footer.collections')}>
-                <h2 className={styles.heading}>{t('common.footer.collections')}</h2>
-                <ul className={cx(styles.linkList, subLinks.length > 5 && styles.linkListSplit)}>
-                  {subLinks.map((link) => (
-                    <li key={link.id}>
-                      <Link href={link.href} className={styles.footerLink}>
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            ) : (
-              <nav className={styles.links} aria-label={t('common.footer.help')}>
-                <h2 className={styles.heading}>{t('common.footer.help')}</h2>
-                <ul className={cx(styles.linkList, styles.linkListSplit)}>
-                  <li>
-                    <Link href="/account/" className={styles.footerLink}>
-                      {t('common.tools.account')}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/account/orders/" className={styles.footerLink}>
-                      {t('common.footer.orders')}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/account/wishlist/" className={styles.footerLink}>
-                      {t('common.tools.wishlist')}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/cart/" className={styles.footerLink}>
-                      {t('common.tools.cart')}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/search/" className={styles.footerLink}>
-                      {t('common.tools.search')}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/help/" className={styles.footerLink}>
-                      {t('common.footer.faq')}
-                    </Link>
-                  </li>
-                </ul>
-              </nav>
-            )}
             <nav className={styles.links} aria-label={t('common.footer.information')}>
               <h2 className={styles.heading}>{t('common.footer.information')}</h2>
               <ul className={styles.linkList}>
-                <li>
-                  <Link href="/contact/" className={styles.footerLink}>
-                    {t('common.nav.contact')}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about/" className={styles.footerLink}>
-                    {t('common.nav.about')}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/policies/privacy/" className={styles.footerLink}>
-                    {t('common.footer.privacy')}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/policies/terms/" className={styles.footerLink}>
-                    {t('common.footer.terms')}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/policies/shipping/" className={styles.footerLink}>
-                    {t('common.footer.shipping')}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/policies/returns/" className={styles.footerLink}>
-                    {t('common.footer.returns')}
-                  </Link>
-                </li>
+                {infoLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className={styles.footerLink}>
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </nav>
           </div>
-          {place || store.contactEmail || store.contactPhone ? (
           <ul className={styles.company}>
-            <li className={cx(styles.companyItem, styles.companyName)}>{store.name}</li>
-            {place ? <li className={styles.companyItem}>{place}</li> : null}
-            {store.contactEmail ? <li className={styles.companyItem}>{store.contactEmail}</li> : null}
+            <li className={cx(styles.companyItem, styles.companyName)}>{t('company.name')}</li>
+            <li className={styles.companyItem}>{place}</li>
+            <li className={styles.companyItem}>{email}</li>
             {store.contactPhone ? <li className={styles.companyItem}>{store.contactPhone}</li> : null}
           </ul>
-          ) : (
-            <span className={styles.footerEnd} aria-hidden="true" />
-          )}
         </div>
         <div className={styles.base}>
           <div className={styles.baseInner}>
-            <p className={styles.copyright}>{t('common.footer.rights', { store: store.name })}</p>
-            <ConsentSettingsButton t={t} className={styles.cookies} />
-            <PoweredBy brand={poweredBy} t={t} className={styles.powered} />
+            <p className={styles.copyright}>{t('common.footer.rights', { store: name })}</p>
+            {/* Core's sealed "Powered by" line stands in for the words whenever the platform names its brand. */}
+            <div className={styles.poweredRow}>
+              {poweredBy ? <PoweredBy brand={poweredBy} t={t} className={styles.powered} /> : <span className={styles.poweredWords}>{t('common.footer.powered')}</span>}
+              <ThemeImage src="Dripfunnel-logo.png" alt={t('common.footer.poweredLogo')} ratio={poweredRatio} sizes="124px" className={styles.poweredLogo} />
+            </div>
           </div>
         </div>
       </footer>

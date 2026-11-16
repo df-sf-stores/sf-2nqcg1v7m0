@@ -1,0 +1,327 @@
+/* Contact: warm ivory, navy words, small gold labels, white fields and a gold send button. */
+
+.page {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.hero {
+  display: flex;
+  box-sizing: border-box;
+  width: min(100%, 1088px);
+  flex-direction: column;
+  align-items: center;
+  margin-inline: auto;
+  padding: 40px 20px 56px;
+  border-bottom: 1px solid var(--line);
+  text-align: center;
+}
+
+.crumbs {
+  display: block;
+  margin-bottom: 40px;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  --df-sealed-size: 10.5px;
+  --df-sealed-color: var(--muted);
+}
+
+.crumbs::part(link) {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--taupe-text);
+  font-family: var(--body-font);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 18px 0 0;
+  color: var(--ink);
+  font-family: var(--heading-font);
+  font-size: clamp(42px, 7vw, 68px);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+
+.lead {
+  max-width: 58ch;
+  margin: 22px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.grid {
+  display: grid;
+  box-sizing: border-box;
+  width: min(100%, 1088px);
+  align-items: start;
+  gap: 56px;
+  margin-inline: auto;
+  padding: 56px 20px 88px;
+}
+
+.info,
+.formSide {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.heading {
+  margin: 20px 0 0;
+  color: var(--ink);
+  font-family: var(--heading-font);
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.body {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.625;
+}
+
+.heading + .body {
+  margin-top: 16px;
+}
+
+.details {
+  margin: 32px 0 0;
+  border-top: 1px solid var(--line);
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.detail dd {
+  margin: 0;
+}
+
+.term {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.email {
+  color: var(--ink);
+  font-size: 17px;
+  overflow-wrap: anywhere;
+}
+
+.company {
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.note {
+  margin: 32px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.noteLink {
+  border-bottom: 1px solid currentcolor;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.noteLink:hover {
+  color: var(--taupe-text);
+}
+
+/* The form */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  margin-top: 28px;
+}
+
+.field,
+.fieldOptional,
+.fieldMessage {
+  display: flex;
+  flex-direction: column;
+}
+
+.field label,
+.fieldOptional label,
+.fieldMessage label {
+  margin-bottom: 10px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.field label small,
+.fieldMessage label small {
+  color: var(--taupe-text);
+  font-size: 12px;
+}
+
+.fieldOptional label small {
+  margin-left: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.field input,
+.fieldOptional input,
+.fieldMessage input {
+  width: 100%;
+  min-height: 50px;
+  box-sizing: border-box;
+  padding: 0 16px;
+  border: 1px solid #d8d8d8;
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.fieldMessage input {
+  min-height: 64px;
+}
+
+.field input:focus,
+.fieldOptional input:focus,
+.fieldMessage input:focus {
+  border-color: var(--taupe-text);
+}
+
+.field input[aria-invalid='true'],
+.fieldOptional input[aria-invalid='true'],
+.fieldMessage input[aria-invalid='true'] {
+  border-color: var(--danger);
+}
+
+.field > small,
+.fieldOptional > small,
+.fieldMessage > small {
+  margin-top: 8px;
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.ready {
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--taupe);
+  background: var(--surface);
+}
+
+.readyTitle {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--heading-font);
+  font-size: 22px;
+  line-height: 1.3;
+}
+
+.readyBody {
+  margin: 6px 0 0;
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.send {
+  display: inline-flex;
+  min-height: 52px;
+  align-self: flex-start;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  padding: 0 36px;
+  border: 0;
+  border-radius: 5px;
+  background: var(--gold);
+  color: var(--night);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  transition: background-color 0.25s ease;
+}
+
+.send:hover {
+  background: var(--gold-hi);
+}
+
+.sendArrow {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentcolor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+
+.noteLink:focus-visible,
+.send:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+@media (min-width: 640px) {
+  .hero,
+  .grid {
+    padding-inline: 32px;
+  }
+}
+
+@media (min-width: 900px) {
+  .hero {
+    padding-top: 48px;
+    padding-bottom: 64px;
+  }
+
+  .grid {
+    gap: 96px;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.12fr);
+    padding-top: 72px;
+    padding-bottom: 112px;
+  }
+
+  .info {
+    max-width: 400px;
+  }
+}

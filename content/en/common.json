@@ -47,6 +47,8 @@
     "orders": "My Orders",
     "faq": "FAQs",
     "whatsapp": "Chat with us on WhatsApp",
-    "rights": "© 2026 {store}. All rights reserved."
+    "rights": "© 2026 {store}. All rights reserved.",
+    "powered": "Powered by",
+    "poweredLogo": "DripFunnel"
   }
 }
