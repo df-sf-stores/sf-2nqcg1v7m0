@@ -125,7 +125,8 @@
       "subjectMissing": "Enter a subject.",
       "messageMissing": "Enter your message.",
       "readyTitle": "Thank you, {name}.",
-      "readyBody": "Messages can’t be sent from this page yet. Please email your message to {email} and we will reply. Your details are still in the form, so you can copy them."
+      "readyBody": "Messages can’t be sent from this page yet. Please email your message to {email} and we will reply. Your details are still in the form, so you can copy them.",
+      "readyBodyNoEmail": "Messages can’t be sent from this page yet. Please reach us through the details on this page and we will reply. Your details are still in the form, so you can copy them."
     }
   },
   "content": {

@@ -11,7 +11,8 @@ import styles from '../styles/contact.module.css'
 export const ContactPage = () => {
   const { store, t } = useStorefront()
   const name = storeName(store.name)
-  const email = store.contactEmail || t('company.email')
+  // The contact email only from Site settings: written in content it would repeat the shop name, which the build refuses.
+  const email = store.contactEmail ?? null
   const place = [store.address?.street, store.address?.city, store.address?.region, store.address?.postal].filter(Boolean).join(', ') || t('company.place')
   return (
     <Layout>
@@ -30,10 +31,12 @@ export const ContactPage = () => {
             </h2>
             <p className={styles.body}>{t('pages.contact.infoLead')}</p>
             <dl className={styles.details}>
-              <div className={styles.detail}>
-                <dt className={styles.term}>{t('pages.contact.email')}</dt>
-                <dd className={styles.email}>{email}</dd>
-              </div>
+              {email ? (
+                <div className={styles.detail}>
+                  <dt className={styles.term}>{t('pages.contact.email')}</dt>
+                  <dd className={styles.email}>{email}</dd>
+                </div>
+              ) : null}
               {store.contactPhone ? (
                 <div className={styles.detail}>
                   <dt className={styles.term}>{t('pages.contact.phone')}</dt>

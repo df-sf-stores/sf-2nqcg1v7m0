@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { ConsentBanner, Link, PoweredBy, PreviewBanner, StoreLogo, useCart, useCollections, useMenu, useStorefront, useWishlist } from '@dripfunnel/storefront-core/theme'
+import { ConsentBanner, Link, PoweredBy, PreviewBanner, StoreLogo, ThemeImage, useCart, useCollections, useMenu, useStorefront, useWishlist } from '@dripfunnel/storefront-core/theme'
 import { HeaderSearch } from './interactive/HeaderSearch'
 import { SiteNav, type NavEntry } from './interactive/SiteNav'
 import { WishlistProvider } from './interactive/SharedWishlist'
@@ -9,6 +9,9 @@ import { tidyName } from './tidyName'
 import styles from '../styles/layout.module.css'
 
 type FooterLink = { href: string; label: string }
+
+/** The DripFunnel logo is 845 × 143 px. */
+const poweredRatio = 845 / 143
 
 /** A social network's outline icon; any other network shows its name. */
 const SocialIcon = ({ network }: { network: string }) => {
@@ -71,7 +74,8 @@ export const Layout = ({ children }: { children: ReactNode }) => {
   ]
   // The store's Site settings lead; the company's registered details fill in what they leave blank.
   const place = [store.address?.city, store.address?.region].filter((part): part is string => Boolean(part)).join(', ') || t('company.place')
-  const email = store.contactEmail || t('company.email')
+  // The contact email only from Site settings: written in content it would repeat the shop name, which the build refuses.
+  const email = store.contactEmail ?? null
   const name = storeName(store.name)
   return (
     <WishlistProvider value={wishlist}>
@@ -178,19 +182,18 @@ export const Layout = ({ children }: { children: ReactNode }) => {
           <ul className={styles.company}>
             <li className={cx(styles.companyItem, styles.companyName)}>{t('company.name')}</li>
             <li className={styles.companyItem}>{place}</li>
-            <li className={styles.companyItem}>{email}</li>
+            {email ? <li className={styles.companyItem}>{email}</li> : null}
             {store.contactPhone ? <li className={styles.companyItem}>{store.contactPhone}</li> : null}
           </ul>
         </div>
         <div className={styles.base}>
           <div className={styles.baseInner}>
             <p className={styles.copyright}>{t('common.footer.rights', { store: name })}</p>
-            {/* Core's sealed "Powered by" line, shown whenever the platform names its brand. */}
-            {poweredBy ? (
-              <div className={styles.poweredRow}>
-                <PoweredBy brand={poweredBy} t={t} className={styles.powered} />
-              </div>
-            ) : null}
+            {/* Core's sealed "Powered by" line stands in for the words whenever the platform names its brand. */}
+            <div className={styles.poweredRow}>
+              {poweredBy ? <PoweredBy brand={poweredBy} t={t} className={styles.powered} /> : <span className={styles.poweredWords}>{t('common.footer.powered')}</span>}
+              <ThemeImage src="Dripfunnel-logo.png" alt={t('common.footer.poweredLogo')} ratio={poweredRatio} sizes="124px" className={styles.poweredLogo} />
+            </div>
           </div>
         </div>
       </footer>

@@ -14,7 +14,7 @@ type Problems = Partial<Record<Field, string>>
  * The contact form. Core's Shop API takes no message yet, so nothing is posted from here: a complete form is checked,
  * then the shopper is told plainly to send it by email to the address given, with what they wrote kept in the fields.
  */
-export const ContactForm = ({ email }: { email: string }) => {
+export const ContactForm = ({ email }: { email: string | null }) => {
   const { t } = useStorefront()
   const [values, setValues] = useState<Record<Field, string>>({ name: '', email: '', phone: '', subject: '', message: '' })
   const [problems, setProblems] = useState<Problems>({})
@@ -48,7 +48,7 @@ export const ContactForm = ({ email }: { email: string }) => {
       {ready ? (
         <div className={styles.ready} role="status">
           <p className={styles.readyTitle}>{t('pages.contact.form.readyTitle', { name: values.name.trim() })}</p>
-          <p className={styles.readyBody}>{t('pages.contact.form.readyBody', { email })}</p>
+          <p className={styles.readyBody}>{email ? t('pages.contact.form.readyBody', { email }) : t('pages.contact.form.readyBodyNoEmail')}</p>
         </div>
       ) : null}
       <SubmitButton className={styles.send}>
