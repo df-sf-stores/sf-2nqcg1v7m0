@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { ConsentBanner, Link, PoweredBy, PreviewBanner, StoreLogo, ThemeImage, useCart, useCollections, useMenu, useStorefront, useWishlist } from '@dripfunnel/storefront-core/theme'
 import { HeaderSearch } from './interactive/HeaderSearch'
 import { SiteNav, type NavEntry } from './interactive/SiteNav'
+import { WishlistProvider } from './interactive/SharedWishlist'
 import { cx } from './cx'
 import { storeName } from './storeName'
 import { tidyName } from './tidyName'
@@ -51,7 +52,9 @@ export const Layout = ({ children }: { children: ReactNode }) => {
   const { collections: fetched, status } = useCollections({ first: 20 })
   const collections = status === 'ready' ? fetched : []
   const { count } = useCart()
-  const { count: wished } = useWishlist()
+  // One wishlist for the page: the header count here, and every heart below through WishlistProvider.
+  const wishlist = useWishlist()
+  const wished = wishlist.count
   const whatsapp = store.social.find((s) => s.network === 'whatsapp')
   const social = store.social.filter((s) => s.network !== 'whatsapp')
   // The merchant's menu leads the header; a store without one shows its collections.
@@ -74,6 +77,7 @@ export const Layout = ({ children }: { children: ReactNode }) => {
   const email = store.contactEmail || t('company.email')
   const name = storeName(store.name)
   return (
+    <WishlistProvider value={wishlist}>
     <div className={styles.shell}>
       {mode === 'live' ? null : <PreviewBanner t={t} className={styles.preview} />}
       <header className={styles.header}>
@@ -202,5 +206,6 @@ export const Layout = ({ children }: { children: ReactNode }) => {
       ) : null}
       <ConsentBanner t={t} className={styles.consent} />
     </div>
+    </WishlistProvider>
   )
 }

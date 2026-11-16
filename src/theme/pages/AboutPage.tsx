@@ -1,5 +1,6 @@
 import { Link, ThemeImage, useStorefront } from '@dripfunnel/storefront-core/theme'
 import { Layout } from '../components/Layout'
+import { storeName } from '../components/storeName'
 import { PageHero } from '../components/PageHero'
 import styles from '../styles/about.module.css'
 
@@ -11,6 +12,8 @@ const Arrow = () => (
 
 export const AboutPage = () => {
   const { store, t } = useStorefront()
+  // The store's name as it reads in a sentence ("Aryobo"), as every other page writes it.
+  const name = storeName(store.name)
   const address = store.address ? [store.address.street, store.address.city, store.address.region, store.address.postal].filter(Boolean).join(', ') : ''
   const whatsapp = store.social.find((s) => s.network === 'whatsapp')
   const visit = address || store.contactPhone || store.contactEmail
@@ -21,7 +24,7 @@ export const AboutPage = () => {
   ]
   return (
     <Layout>
-      <PageHero title={t('pages.about.title', { store: store.name })} lead={t('pages.about.lead', { store: store.name })} crumbs={[{ label: t('common.nav.about'), href: '/about/' }]} ghost={t('pages.about.eyebrow')} />
+      <PageHero title={t('pages.about.title', { store: name })} lead={t('pages.about.lead', { store: name })} crumbs={[{ label: t('common.nav.about'), href: '/about/' }]} ghost={t('pages.about.eyebrow')} />
       <section className={styles.story}>
         <div className={styles.storyPicture}>
           <ThemeImage src="featured.webp" alt="" ratio={0.8} sizes="(min-width: 900px) 520px, 100vw" className={styles.cover} />
@@ -31,7 +34,7 @@ export const AboutPage = () => {
           <h2 className={styles.heading}>
             {t('pages.about.story.title')} <em className={styles.accent}>{t('pages.about.story.accent')}</em>
           </h2>
-          <p className={styles.lead}>{t('pages.about.story.first', { store: store.name })}</p>
+          <p className={styles.lead}>{t('pages.about.story.first', { store: name })}</p>
           <p className={styles.body}>{t('pages.about.story.second')}</p>
           <Link href="/collections/all/" className={styles.inkLink}>
             {t('pages.about.shop')}
@@ -77,7 +80,7 @@ export const AboutPage = () => {
         </div>
         <span className={styles.closingShade} aria-hidden="true" />
         <div className={styles.closingCopy}>
-          <p className={styles.closingText}>{t('pages.about.closing', { store: store.name })}</p>
+          <p className={styles.closingText}>{t('pages.about.closing', { store: name })}</p>
           <Link href="/collections/all/" className={styles.ghostButton}>
             {t('pages.about.discover')}
             <Arrow />
