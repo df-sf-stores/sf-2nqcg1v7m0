@@ -192,7 +192,9 @@ export const Layout = ({ children }: { children: ReactNode }) => {
             {/* Core's sealed "Powered by" line stands in for the words whenever the platform names its brand. */}
             <div className={styles.poweredRow}>
               {poweredBy ? <PoweredBy brand={poweredBy} t={t} className={styles.powered} /> : <span className={styles.poweredWords}>{t('common.footer.powered')}</span>}
-              <ThemeImage src="Dripfunnel-logo.png" alt={t('common.footer.poweredLogo')} ratio={poweredRatio} sizes="124px" className={styles.poweredLogo} />
+              <Link href={t('common.footer.poweredHref')} className={styles.poweredLink}>
+                <ThemeImage src="Dripfunnel-logo.png" alt={t('common.footer.poweredLogo')} ratio={poweredRatio} sizes="124px" className={styles.poweredLogo} />
+              </Link>
             </div>
           </div>
         </div>

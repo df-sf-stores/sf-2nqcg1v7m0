@@ -474,6 +474,17 @@
   flex: none;
 }
 
+/* The logo links to DripFunnel; the link adds no box of its own around it. */
+.poweredLink {
+  display: block;
+  flex: none;
+}
+
+.poweredLink:focus-visible {
+  outline: 1px solid var(--gold);
+  outline-offset: 3px;
+}
+
 .consent {
   display: block;
 }
