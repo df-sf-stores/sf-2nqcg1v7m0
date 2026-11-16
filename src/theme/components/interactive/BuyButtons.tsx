@@ -1,10 +1,9 @@
 'use client'
 
 import { useEffect, useId, useRef, useState } from 'react'
-import { AddToCart, BuyNow, Link, TextField, useCart, useStorefront, type GiftRecipient, type ProductPage } from '@dripfunnel/storefront-core/theme'
+import { AddToCart, BuyNow, Link, TextField, useStorefront, type GiftRecipient, type ProductPage } from '@dripfunnel/storefront-core/theme'
 import shop from '../../styles/shop.module.css'
 import styles from '../../styles/product.module.css'
-import { cx } from '../cx'
 import { WishlistHeart } from './WishlistHeart'
 
 const emailLike = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -15,36 +14,18 @@ const emailLike = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
  */
 export const BuyButtons = ({ page }: { page: ProductPage }) => {
   const { t } = useStorefront()
-  const cart = useCart()
   const [addedId, setAddedId] = useState<string | null>(null)
   const [failed, setFailed] = useState(false)
-  // Core keeps the button disabled until the engine answers; this only names that wait on the button.
-  const [adding, setAdding] = useState(false)
   const [gift, setGift] = useState<GiftRecipient>({ recipientName: '', recipientEmail: '', sendOn: '', message: '' })
-  const [wanted, setWanted] = useState(1)
   const version = page.version
   const kind = page.product?.kind
   const isGift = kind?.kind === 'gift_card'
-  // How many to buy, never more than the chosen version has; a gift card goes one recipient at a time.
-  const most = Math.max(1, Math.min(99, version?.stock.available ?? 99))
-  const chosen = Math.min(wanted, most)
-  const quantity = isGift ? 1 : chosen
   const giftReady = gift.recipientName.trim() !== '' && emailLike.test(gift.recipientEmail.trim())
   const buyable = version !== null && version.stock.inStock && (!isGift || giftReady)
-  // A product with questions opens core's form first, which may be closed without adding, so it shows no wait.
-  const asks = (page.product?.questions.length ?? 0) > 0
   const set = (patch: Partial<GiftRecipient>) => setGift({ ...gift, ...patch })
   const why = useId()
   const waitsForRecipient = isGift && !giftReady
   const added = version !== null && addedId === version.id
-  // A failed answer can still mean the engine added it (a slow answer the browser stopped waiting for), so the cart is
-  // read again once: the header count then shows what is really in it, and the shopper is sent to look before retrying.
-  const settle = (worked: boolean) => {
-    setAdding(false)
-    setFailed(!worked)
-    if (!worked) cart.retry()
-    return worked
-  }
   // A gift card keeps Add to cart, so a second one can go to someone else.
   const inCart = added && !isGift
   // Go to cart replaces the button just pressed, so focus moves to it rather than dropping to the page (WCAG 2.4.3).
@@ -80,67 +61,36 @@ export const BuyButtons = ({ page }: { page: ProductPage }) => {
           {t('shop.product.gift.needed')}
         </p>
       ) : null}
-      {isGift ? null : (
-        <div className={styles.quantity} role="group" aria-label={t('shop.product.quantity')}>
-          <span className={styles.quantityLabel} aria-hidden="true">
-            {t('shop.product.quantity')}
-          </span>
-          <button type="button" className={styles.step} aria-label={t('shop.cart.less')} disabled={quantity <= 1} onClick={() => setWanted(quantity - 1)}>
-            <svg className={styles.stepIcon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M5 12h14" />
-            </svg>
-          </button>
-          <span className={styles.count} aria-live="polite">
-            {chosen}
-          </span>
-          <button type="button" className={styles.step} aria-label={t('shop.cart.more')} disabled={quantity >= most} onClick={() => setWanted(quantity + 1)}>
-            <svg className={styles.stepIcon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M5 12h14M12 5v14" />
-            </svg>
-          </button>
-        </div>
-      )}
-      <div className={styles.actions}>
       {inCart ? (
-        <Link href="/cart/" className={cx(shop.primary, styles.addButton)} ref={goToCart}>
+        <Link href="/cart/" className={shop.primary} ref={goToCart}>
           {t('shop.product.goToCart')}
         </Link>
       ) : (
-        <span className={styles.addWrap} onClick={() => setAdding(buyable && !asks)}>
         <AddToCart
           versionId={version?.id ?? null}
-          quantity={quantity}
           disabled={!buyable}
           gift={isGift ? gift : null}
           describedBy={waitsForRecipient ? why : undefined}
-          className={cx(shop.primary, styles.addButton)}
+          className={shop.primary}
           onDone={(worked) => {
-            if (!settle(worked)) return
+            setFailed(!worked)
+            if (!worked) return
             justAdded.current = true
             setAddedId(version?.id ?? null)
           }}
         >
-          {adding ? t('shop.product.adding') : isGift ? t('shop.product.gift.add') : t('shop.product.add')}
+          {isGift ? t('shop.product.gift.add') : t('shop.product.add')}
         </AddToCart>
-        </span>
       )}
       {isGift ? null : (
-        <BuyNow versionId={version?.id ?? null} quantity={quantity} disabled={!buyable} className={cx(shop.secondary, styles.buyNow)} onDone={(bought) => void settle(bought)}>
+        <BuyNow versionId={version?.id ?? null} disabled={!buyable} className={shop.secondary} onDone={(bought) => setFailed(!bought)}>
           {t('shop.product.buyNow')}
         </BuyNow>
       )}
       {page.product ? <WishlistHeart productId={page.product.id} name={page.product.name} versionId={version?.id ?? null} /> : null}
-      </div>
-      {failed ? (
-        <p className={styles.failed} role="alert">
-          {t('shop.product.addFailed')}{' '}
-          <Link href="/cart/" className={styles.failedLink}>
-            {t('shop.product.viewCart')}
-          </Link>
-        </p>
-      ) : added ? (
+      {failed || added ? (
         <p className={styles.added} role="status">
-          {t('shop.product.added')}
+          {failed ? t('shop.product.addFailed') : t('shop.product.added')}
         </p>
       ) : null}
     </div>

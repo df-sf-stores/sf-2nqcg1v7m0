@@ -233,16 +233,15 @@
 .footerInner {
   position: relative;
   box-sizing: border-box;
-  width: min(100%, 1400px);
+  width: min(100%, 1120px);
   margin-inline: auto;
   padding: 56px 20px 0;
 }
 
-/* Phone: one column; tablet: the brand above two link columns; desktop: three columns in a row. */
 .columns {
   display: grid;
   gap: 40px 24px;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 }
 
 .about {
@@ -269,7 +268,7 @@
   display: block;
   width: auto;
   max-width: 180px;
-  height: 96px;
+  height: 84px;
   object-fit: contain;
   object-position: left center;
 }
@@ -338,32 +337,32 @@
 }
 
 .heading {
-  margin: 0 0 20px;
+  margin: 0 0 18px;
   color: var(--gold);
   font-family: var(--body-font);
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.22em;
+  font-weight: 700;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
 }
 
 .linkList {
   display: grid;
-  gap: 0 24px;
+  gap: 2px 28px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .linkListSplit {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, max-content);
 }
 
 .footerLink {
   display: inline-flex;
-  min-height: 35px;
+  min-height: 32px;
   align-items: center;
-  color: #aeb5c5;
+  color: rgb(247 245 240 / 80%);
   text-decoration: none;
   transition: color 0.25s ease;
 }
@@ -372,15 +371,14 @@
   color: var(--gold-hi);
 }
 
-/* The company's registered details: stacked on a phone, parted by thin gold rules from a tablet up. */
 .company {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 0;
   margin: 48px 0 0;
-  padding: 32px 0;
-  border-top: 1px solid rgb(255 255 255 / 12%);
+  padding: 28px 0;
+  border-top: 1px solid var(--footer-line);
   color: rgb(247 245 240 / 78%);
   font-size: 13px;
   list-style: none;
@@ -392,19 +390,18 @@
 }
 
 .companyItem + .companyItem::before {
-  display: none;
   width: 1px;
   height: 14px;
-  margin: 0 24px;
-  background: rgb(205 166 79 / 60%);
+  margin: 0 20px;
+  background: rgb(255 255 255 / 25%);
   content: '';
 }
 
 .companyName {
   color: var(--ivory);
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.22em;
+  font-weight: 700;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 
@@ -417,6 +414,11 @@
   color: var(--gold-hi);
 }
 
+.footerEnd {
+  display: block;
+  height: 56px;
+}
+
 .base {
   position: relative;
   border-top: 1px solid var(--footer-line);
@@ -425,7 +427,7 @@
 .baseInner {
   display: flex;
   box-sizing: border-box;
-  width: min(100%, 1400px);
+  width: min(100%, 1120px);
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
@@ -441,37 +443,28 @@
   margin-right: auto;
 }
 
-
-/* "Powered by" and the DripFunnel logo, its own blue and orange untouched, after a thin rule. */
-.poweredRow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.cookies {
+  display: block;
+  --df-sealed-color: var(--footer-ink);
 }
 
-.poweredRow::before {
-  width: 1px;
-  height: 16px;
-  background: rgb(255 255 255 / 25%);
-  content: '';
-}
-
-.poweredWords {
-  color: var(--ivory);
+.cookies::part(button) {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--footer-line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--footer-ink);
   font-size: 12px;
 }
 
+/* Core's "Powered by" keeps the platform's own logo and colours: only the words around it are set. */
 .powered {
   display: block;
+  padding-left: 20px;
+  border-left: 1px solid rgb(255 255 255 / 20%);
   --df-sealed-color: var(--footer-ink);
   --df-sealed-muted: rgb(247 245 240 / 85%);
-}
-
-.poweredLogo {
-  display: block;
-  width: 110px;
-  height: auto;
-  flex: none;
 }
 
 .consent {
@@ -519,26 +512,7 @@
 
 @media (min-width: 640px) {
   .columns {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .about {
-    grid-column: 1 / -1;
-  }
-
-  .company {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px 0;
-  }
-
-  .companyItem + .companyItem::before {
-    display: block;
-  }
-
-  .poweredLogo {
-    width: 124px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -563,24 +537,25 @@
   }
 
   .footerInner {
-    padding: 80px 40px 0;
+    padding: 72px 32px 0;
   }
 
   .columns {
     gap: 40px;
-    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.4fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.8fr) minmax(0, 1.2fr) minmax(0, 0.9fr);
   }
 
   .about {
     grid-column: auto;
   }
 
-  .company {
-    margin-top: 56px;
-    padding-bottom: 40px;
+  /* A thin rule before each link column. */
+  .links {
+    padding-left: 32px;
+    border-left: 1px solid var(--footer-line);
   }
 
   .baseInner {
-    padding: 22px 40px;
+    padding: 22px 32px;
   }
 }

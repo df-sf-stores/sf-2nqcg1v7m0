@@ -1,36 +1,21 @@
-/* Product page: a large gallery beside a calm information panel; navy words, gold accents, thin rules. */
-
-.page {
-  width: min(100%, 1280px);
-  padding-top: 24px;
-}
-
 .product {
   display: grid;
-  gap: 28px;
+  gap: 24px;
   grid-template-columns: minmax(0, 1fr);
 }
 
-/* Gallery */
-
-.gallery,
-.galleryRail {
+.gallery {
   display: flex;
   min-width: 0;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
-.stage,
-.stageZoom {
-  position: relative;
+.stage {
   overflow: hidden;
   aspect-ratio: 4 / 5;
-  background: var(--soft);
-}
-
-.stageZoom {
-  cursor: zoom-in;
+  border-radius: var(--radius);
+  background: var(--picture-alt);
 }
 
 .media {
@@ -40,56 +25,36 @@
   object-fit: cover;
 }
 
-/* The picture magnified around the pointer while it rests on the picture. */
-.stageZoom .media {
-  transform-origin: var(--zoom-x, 50%) var(--zoom-y, 50%);
-  transition-duration: 0.35s;
-  transition-property: transform;
-  transition-timing-function: ease;
-}
-
-.stageZoom:hover .media {
-  transform: scale(1.8);
-}
-
 .noPicture {
   aspect-ratio: 4 / 5;
-  background: var(--soft);
+  border-radius: var(--radius);
+  background: var(--picture-alt);
 }
 
 .thumbs {
   display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  scrollbar-width: thin;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .thumb,
 .thumbOn {
   display: inline-flex;
   overflow: hidden;
-  width: 72px;
-  height: 72px;
-  flex: none;
+  width: 60px;
+  height: 60px;
   align-items: center;
   justify-content: center;
   padding: 0;
-  border: 1px solid var(--line);
+  border: 2px solid transparent;
+  border-radius: 8px;
   background: var(--soft);
   color: var(--ink);
   cursor: pointer;
-  opacity: 0.7;
-  transition-duration: 0.2s;
-  transition-property: opacity, border-color;
-}
-
-.thumb:hover {
-  opacity: 1;
 }
 
 .thumbOn {
   border-color: var(--ink);
-  opacity: 1;
 }
 
 .thumbImage {
@@ -105,34 +70,31 @@
   fill: currentcolor;
 }
 
-/* Information panel */
-
 .info {
   display: flex;
   min-width: 0;
   flex-direction: column;
   align-items: flex-start;
-  gap: 16px;
+  gap: 14px;
 }
 
 .badge {
-  padding: 5px 10px;
+  padding: 4px 9px;
   background: var(--night);
   color: var(--ivory);
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 9.5px;
+  font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 
 .title,
 .loadingTitle {
-  margin: 4px 0 0;
-  color: var(--ink);
+  margin: 0;
   font-family: var(--heading-font);
-  font-size: clamp(32px, 4.2vw, 46px);
+  font-size: 34px;
   font-weight: 400;
-  letter-spacing: 0.005em;
+  letter-spacing: 0.01em;
   line-height: 1.08;
   overflow-wrap: anywhere;
   text-transform: var(--heading-case);
@@ -147,110 +109,54 @@
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 8px;
+  gap: 6px;
   margin: 0;
+  font-size: 20px;
 }
 
 .from {
-  color: var(--muted);
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-weight: 700;
 }
 
 .priceTag {
   display: inline-block;
-  --df-price-size: 24px;
+  --df-price-size: 22px;
   --df-sealed-size: 13px;
-  --df-sealed-color: var(--ink);
+  --df-sealed-color: var(--taupe-text);
 }
 
 .priceTag::part(amount) {
-  color: var(--ink);
-  font-weight: 500;
-  letter-spacing: 0.01em;
+  font-weight: 600;
 }
 
 .priceTag::part(was) {
-  margin-left: 10px;
+  margin-left: 8px;
   color: var(--muted);
   font-size: 16px;
 }
 
 .priceTag::part(tax) {
-  margin-left: 6px;
   color: var(--muted);
-  font-size: 12px;
-  letter-spacing: 0.04em;
-}
-
-/* Stock: a small dot before the words, green in stock, muted otherwise. */
-.stock,
-.stockIn,
-.stockOut {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  color: var(--ink-soft);
   font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
 }
-
-.stockIn::before,
-.stockOut::before {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  content: '';
-}
-
-.stockIn::before {
-  background: #2f7d4f;
-}
-
-.stockOut {
-  color: var(--muted);
-}
-
-.stockOut::before {
-  background: var(--muted);
-}
-
-.rule {
-  width: 100%;
-  height: 1px;
-  margin: 4px 0;
-  background: var(--line);
-}
-
-/* Options */
 
 .options {
   display: flex;
   width: 100%;
   flex-direction: column;
-  gap: 18px;
-}
-
-.options:empty {
-  display: none;
+  gap: 16px;
 }
 
 .option {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .optionName {
   margin: 0;
-  color: var(--ink);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  color: var(--muted);
+  font-size: 14px;
 }
 
 .values {
@@ -262,264 +168,39 @@
 .value,
 .valueOn,
 .valueGone {
-  min-width: 52px;
+  min-width: 56px;
   min-height: 44px;
   padding: 0 16px;
-  border: 1px solid var(--field-line);
-  border-radius: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
   background: var(--surface);
   color: var(--ink);
   font: inherit;
-  font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition-duration: 0.2s;
-  transition-property: border-color, background-color, color;
-}
-
-.value:hover {
-  border-color: var(--ink);
 }
 
 .valueOn {
-  border-color: var(--night);
-  background: var(--night);
-  color: var(--ivory);
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
 }
 
 .valueGone {
-  border-style: dashed;
   color: var(--muted);
   text-decoration: line-through;
 }
 
-/* Quantity, the buttons and the messages under them */
-
-.buy {
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.quantity {
-  display: inline-flex;
-  align-self: flex-start;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px 0;
-}
-
-.quantityLabel {
-  width: 100%;
-  color: var(--ink);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-.step {
-  display: inline-flex;
-  width: 48px;
-  height: 48px;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  border: 1px solid var(--field-line);
-  background: var(--surface);
-  color: var(--ink);
-  font: inherit;
-  font-size: 18px;
-  line-height: 1;
-  cursor: pointer;
-  transition-duration: 0.2s;
-  transition-property: background-color, border-color;
-}
-
-.step:hover:not(:disabled) {
-  border-color: var(--ink);
-  background: var(--soft);
-}
-
-.stepIcon {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: currentcolor;
-  stroke-linecap: round;
-  stroke-width: 1.6;
-}
-
-.step:disabled {
-  color: var(--muted);
-  cursor: default;
-  opacity: 0.5;
-}
-
-.count {
-  display: inline-flex;
-  width: 56px;
-  height: 48px;
-  box-sizing: border-box;
-  align-items: center;
-  justify-content: center;
-  border-block: 1px solid var(--field-line);
-  color: var(--ink);
-  font-size: 15px;
-  font-variant-numeric: tabular-nums;
+.stock {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 14px;
   font-weight: 500;
 }
 
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.addWrap {
-  display: flex;
-  flex: 1 1 200px;
-}
-
-.actions .addButton,
-.actions .buyNow {
-  box-sizing: border-box;
-  flex: 1 1 200px;
-  min-height: 54px;
-  align-self: stretch;
-  font-size: 11px;
-  letter-spacing: 0.22em;
-}
-
-.actions .addButton {
-  border-color: var(--night);
-  background: var(--night);
-  color: #fff;
-}
-
-.actions .addButton:hover {
-  border-color: var(--night-2);
-  background: #1c2740;
-  color: #fff;
-}
-
-.actions .addButton:disabled {
-  border-color: var(--night);
-  background: var(--night);
-  color: #fff;
-  cursor: progress;
-  opacity: 0.6;
-}
-
-.actions .buyNow {
-  border-color: var(--night);
-  background: var(--surface);
-  color: var(--night);
-}
-
-.actions .buyNow:hover {
-  border-color: var(--night);
-  background: var(--soft);
-}
-
-.actions .buyNow:disabled {
-  cursor: default;
-  opacity: 0.5;
-}
-
-.actions > .heart {
-  display: inline-flex;
-  width: 54px;
-  min-height: 54px;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  border: 1px solid var(--field-line);
-  border-radius: var(--button-radius);
-  background: var(--surface);
-  color: var(--ink);
-  cursor: pointer;
-  transition-duration: 0.2s;
-  transition-property: border-color, color;
-}
-
-.actions > .heart:hover {
-  border-color: var(--ink);
-}
-
-.actions > .heartOn {
-  border-color: var(--gold);
-  color: var(--taupe-text);
-}
-
-.kindNote {
-  margin: 0;
-  color: var(--ink-soft);
-  font-size: 14px;
-}
-
-.gift {
-  display: grid;
-  gap: 12px;
-}
-
-.field {
-  display: grid;
-  gap: 6px;
-}
-
-.field label {
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.field small {
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 400;
-}
-
-.field input {
-  min-height: 48px;
-  box-sizing: border-box;
-  padding: 0 14px;
-  border: 1px solid var(--field-line);
-  background: var(--surface);
-  color: var(--ink);
-  font: inherit;
-}
-
-.added,
-.failed {
-  margin: 0;
-  padding: 12px 14px;
-  border-left: 2px solid var(--gold);
-  background: var(--soft);
-  color: var(--ink-soft);
-  font-size: 13px;
-  line-height: 1.55;
-}
-
-.failed {
-  border-left-color: var(--danger);
-  color: var(--ink);
-}
-
-.failedLink {
-  color: var(--ink);
-  font-weight: 600;
-  text-decoration: underline;
-}
-
 .highlights {
-  display: grid;
-  gap: 6px;
   margin: 0;
   padding-left: 18px;
   color: var(--ink-soft);
-  font-size: 14px;
 }
 
 .legal {
@@ -528,61 +209,20 @@
   --df-sealed-size: 14px;
 }
 
-.sizeLink {
-  align-self: flex-start;
-  min-height: 24px;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--ink);
-  font: inherit;
-  font-size: 13px;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-/* Accordions: only the sections the product has data for */
-
 .sections {
   width: 100%;
-  margin-top: 8px;
   border-top: 1px solid var(--line);
 }
 
 .section {
+  padding: 14px 0;
   border-bottom: 1px solid var(--line);
 }
 
 .summary {
-  display: flex;
-  min-height: 56px;
-  align-items: center;
-  justify-content: space-between;
-  color: var(--ink);
-  font-size: 11px;
+  min-height: 28px;
   font-weight: 600;
-  letter-spacing: 0.18em;
-  list-style: none;
-  text-transform: uppercase;
   cursor: pointer;
-}
-
-/* A small chevron, turned up while the section is open. */
-.summary::after {
-  width: 7px;
-  height: 7px;
-  flex: none;
-  margin-right: 4px;
-  border-right: 1.5px solid var(--muted);
-  border-bottom: 1.5px solid var(--muted);
-  content: '';
-  transform: translateY(-2px) rotate(45deg);
-  transition-duration: 0.2s;
-  transition-property: transform;
-}
-
-.section[open] > .summary::after {
-  transform: translateY(2px) rotate(-135deg);
 }
 
 .sectionTitle {
@@ -593,13 +233,10 @@
   line-height: 28px;
 }
 
-.description,
-.body {
-  max-width: 62ch;
-  margin: 0 0 20px;
+.description {
+  max-width: 60ch;
+  margin: 10px 0 0;
   color: var(--ink-soft);
-  font-size: 14.5px;
-  line-height: 1.75;
   overflow-wrap: anywhere;
 }
 
@@ -631,48 +268,57 @@
   text-decoration: underline;
 }
 
+.body {
+  max-width: 60ch;
+  margin: 10px 0 0;
+  color: var(--ink-soft);
+  overflow-wrap: anywhere;
+}
+
 .specs {
   display: grid;
-  gap: 0;
-  margin: 0 0 20px;
+  gap: 8px;
+  margin: 10px 0 0;
 }
 
 .spec,
 .faq {
   display: grid;
-  gap: 4px;
-  padding: 10px 0;
-  border-top: 1px solid var(--line);
-}
-
-.spec:first-child,
-.faq:first-child {
-  border-top: 0;
-  padding-top: 0;
+  gap: 2px;
 }
 
 .spec dt,
 .faq dt {
   color: var(--muted);
-  font-size: 12px;
-  letter-spacing: 0.06em;
+  font-size: 13px;
 }
 
 .spec dd,
 .faq dd {
   margin: 0;
   color: var(--ink-soft);
-  font-size: 14px;
   overflow-wrap: anywhere;
 }
 
-/* Service links and related products */
+.related {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding-top: 48px;
+}
 
+.relatedHead {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Where to read about delivery, returns and paying, as four quiet links under the product. */
 .service {
   display: grid;
   gap: 1px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin: 56px 0 0;
+  margin: 48px 0 0;
   padding: 0;
   border-block: 1px solid var(--line);
   list-style: none;
@@ -686,17 +332,21 @@
   gap: 10px;
   color: var(--ink-soft);
   font-size: 10.5px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.2em;
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
-  transition-duration: 0.25s;
-  transition-property: color;
+  transition: color 0.25s ease;
 }
 
 .serviceLink:hover {
   color: var(--taupe-text);
+}
+
+.serviceLink:focus-visible {
+  outline: 1px solid var(--focus);
+  outline-offset: -3px;
 }
 
 .serviceIcon {
@@ -710,107 +360,140 @@
   stroke-width: 1.5;
 }
 
-.related {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-  padding-top: 56px;
+@media (min-width: 900px) {
+  .service {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
-
-.relatedHead {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* Focus */
 
 .thumb:focus-visible,
 .thumbOn:focus-visible,
 .value:focus-visible,
 .valueOn:focus-visible,
 .valueGone:focus-visible,
-.step:focus-visible,
-.summary:focus-visible,
-.heart:focus-visible,
-.sizeLink:focus-visible,
-.failedLink:focus-visible {
+.summary:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
 
-.serviceLink:focus-visible {
-  outline: 1px solid var(--focus);
-  outline-offset: -3px;
-}
-
-/* Phone: purchase buttons full width, stacked. */
-@media (max-width: 479px) {
-  .addWrap,
-  .actions .buyNow {
-    flex-basis: 100%;
-  }
-}
-
-@media (min-width: 768px) {
-  .page {
-    padding-top: 36px;
-  }
-
+@media (min-width: 900px) {
   .product {
     align-items: start;
-    gap: 56px;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: 40px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
   }
 
-  /* Thumbnails in a rail to the left of the picture. */
-  .galleryRail {
-    flex-direction: row-reverse;
-    align-items: flex-start;
-  }
-
-  .galleryRail .stage,
-  .galleryRail .stageZoom {
-    flex: 1;
-  }
-
-  .galleryRail .thumbs {
-    max-height: 640px;
-    flex-direction: column;
-    overflow-x: visible;
-    overflow-y: auto;
-  }
-
-  /* The panel stays in view beside a tall gallery. */
-  .info {
-    position: sticky;
-    top: 104px;
-  }
-
-  .service {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    margin-top: 80px;
+  .title {
+    font-size: 44px;
   }
 
   .related {
-    padding-top: 80px;
+    padding-top: 72px;
   }
 }
 
-@media (min-width: 1200px) {
-  .product {
-    gap: 72px;
-  }
+.buy {
+  display: flex;
+  align-self: stretch;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .stageZoom .media,
-  .thumb,
-  .thumbOn,
-  .value,
-  .step,
-  .serviceLink,
-  .summary::after {
-    transition-property: none;
-  }
+.buy > button,
+.buy > a {
+  flex: 1 1 180px;
+}
+
+.buy > button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.kindNote {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+.gift {
+  display: grid;
+  flex-basis: 100%;
+  gap: 12px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.field small {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.field input {
+  min-height: 48px;
+  box-sizing: border-box;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) - 4px);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+}
+
+.added {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+.buy > .heart {
+  display: inline-flex;
+  flex: 0 0 48px;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--button-radius);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.buy > .heartOn {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.heart:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.sizeLink {
+  align-self: flex-start;
+  min-height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.sizeLink:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }

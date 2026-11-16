@@ -935,7 +935,7 @@
 .newsletterInner {
   display: grid;
   box-sizing: border-box;
-  width: min(100%, 1400px);
+  width: min(100%, 1180px);
   align-items: center;
   gap: 36px 64px;
   margin-inline: auto;
@@ -952,13 +952,12 @@
 }
 
 .newsletterTitle {
-  max-width: 15ch;
+  max-width: 14ch;
   margin: 14px 0 0;
   font-family: var(--heading-font);
   font-size: clamp(38px, 5vw, 60px);
   font-weight: 400;
-  letter-spacing: 0.02em;
-  line-height: 0.95;
+  line-height: 1;
   text-transform: uppercase;
 }
 
@@ -1040,16 +1039,6 @@
 
 .newsletterJoin:hover {
   background: var(--gold-hi);
-}
-
-.newsletterArrow {
-  width: 14px;
-  height: 14px;
-  fill: none;
-  stroke: currentcolor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.6;
 }
 
 .newsletterDone {
@@ -1283,7 +1272,7 @@
 
   .newsletterInner {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    padding-block: 96px;
+    padding-block: 80px;
   }
 
   .campaignCopy {

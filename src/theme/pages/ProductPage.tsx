@@ -4,7 +4,6 @@ import { Gallery } from '../components/interactive/Gallery'
 import { Options } from '../components/interactive/Options'
 import { Retry } from '../components/interactive/Retry'
 import { Layout } from '../components/Layout'
-import { cx } from '../components/cx'
 import { Notice } from '../components/Notice'
 import { ProductGrid } from '../components/ProductCard'
 import shop from '../styles/shop.module.css'
@@ -44,18 +43,15 @@ export const ProductPage = () => {
     )
   }
   const firstMissing = page.missing[0]
-  // Related products once each, never this one: the merchant's picks, else the store's newest.
-  const pool = product.related.length ? product.related : newest.products
-  const related = pool.filter((p, i) => p.id !== product.id && p.href !== product.href && pool.findIndex((q) => q.id === p.id) === i).slice(0, 4)
+  const related = (product.related.length ? product.related : newest.products.filter((p) => p.href !== product.href)).slice(0, 4)
   const specs = product.specs.filter((s) => s.versionId === null || s.versionId === page.version?.id)
-  const inStock = !firstMissing && page.stock?.inStock === true
   return (
     <Layout>
-      <section className={cx(shop.page, styles.page)}>
+      <section className={shop.page}>
+        <Breadcrumbs crumbs={[{ label: t('shop.crumbs.home'), href: '/' }, { label: product.name, href: product.href }]} t={t} className={shop.crumbs} />
         <div className={styles.product}>
           <Gallery photos={page.photos} video={product.video} name={product.name} />
           <div className={styles.info}>
-            <Breadcrumbs crumbs={[{ label: t('shop.crumbs.home'), href: '/' }, { label: product.name, href: product.href }]} t={t} className={shop.crumbs} />
             {product.badges[0] ? <span className={styles.badge}>{product.badges[0].label}</span> : null}
             <h1 className={styles.title}>{product.name}</h1>
             {page.price ? (
@@ -64,12 +60,11 @@ export const ProductPage = () => {
                 <Price money={page.price} compareAt={page.compareAt} includesTax={store.pricesIncludeTax} locale={locale} t={t} className={styles.priceTag} />
               </p>
             ) : null}
-            <p className={firstMissing ? styles.stock : inStock ? styles.stockIn : styles.stockOut} role="status">
-              {firstMissing ? t('shop.product.choose', { option: firstMissing.name }) : inStock ? t('shop.product.inStock') : t('shop.product.outOfStock')}
-            </p>
-            <div className={styles.rule} aria-hidden="true" />
             <Options page={page} />
             <SizeChart chart={product.sizeChart} className={styles.sizeLink} />
+            <p className={styles.stock} role="status">
+              {firstMissing ? t('shop.product.choose', { option: firstMissing.name }) : page.stock?.inStock ? t('shop.product.inStock') : t('shop.product.outOfStock')}
+            </p>
             <BuyButtons page={page} />
             {product.highlights.length ? (
               <ul className={styles.highlights}>
@@ -81,10 +76,12 @@ export const ProductPage = () => {
             <LegalNotices notices={product.legal} t={t} className={styles.legal} />
             <div className={styles.sections}>
               {product.description ? (
-                <details className={styles.section} open>
-                  <summary className={styles.summary}>{t('shop.product.description')}</summary>
+                <section className={styles.section} aria-labelledby="product-description">
+                  <h2 id="product-description" className={styles.sectionTitle}>
+                    {t('shop.product.description')}
+                  </h2>
                   <RichText html={product.description} className={styles.description} />
-                </details>
+                </section>
               ) : null}
               {specs.length ? (
                 <details className={styles.section}>
