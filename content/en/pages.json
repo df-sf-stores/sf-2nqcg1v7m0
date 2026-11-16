@@ -45,7 +45,8 @@
     "title": "Our policies",
     "lead": "The terms that apply when you shop with us.",
     "legal": "Legal notice",
-    "ask": "Questions about this policy? Get in touch and we will answer."
+    "ask": "Questions about this policy? Get in touch and we will answer.",
+    "updated": "Last updated:"
   },
   "notFound": {
     "title": "We can’t find that page",
@@ -96,14 +97,36 @@
   },
   "contact": {
     "title": "Get in touch",
-    "lead": "Questions about an order or anything else? Write to us and we will reply.",
     "email": "Email",
     "phone": "Phone",
-    "visit": "Visit",
-    "reach": "Reach {store}",
-    "follow": "Follow us",
-    "helpEyebrow": "Customer care",
-    "helpTitle": "Help with an order"
+    "eyebrow": "Get in touch",
+    "heading": "Contact {store}",
+    "intro": "Have a question about our collections, products or your order? We’d love to hear from you.",
+    "infoEyebrow": "Contact information",
+    "infoTitle": "We are here to help.",
+    "infoLead": "For questions about products, collections, orders or general enquiries, send us a message.",
+    "office": "Registered office",
+    "orderNote": "For an order enquiry, please include your order number. You can view your orders anytime in",
+    "orderLink": "your account",
+    "form": {
+      "eyebrow": "Send us a message",
+      "label": "Send us a message",
+      "name": "Full name",
+      "email": "Email address",
+      "phone": "Phone number",
+      "subject": "Subject",
+      "message": "Message",
+      "required": "*",
+      "optional": "(optional)",
+      "send": "Send message",
+      "nameMissing": "Enter your full name.",
+      "emailInvalid": "Enter a valid email address, such as name@example.com.",
+      "phoneInvalid": "Enter a valid phone number, or leave it empty.",
+      "subjectMissing": "Enter a subject.",
+      "messageMissing": "Enter your message.",
+      "readyTitle": "Thank you, {name}.",
+      "readyBody": "Messages can’t be sent from this page yet. Please email your message to {email} and we will reply. Your details are still in the form, so you can copy them."
+    }
   },
   "content": {
     "loading": "Loading the page",

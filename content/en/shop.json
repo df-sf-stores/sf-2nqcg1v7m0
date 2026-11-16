@@ -75,7 +75,8 @@
     "outOfStock": "Sold out",
     "unavailable": "{value}, sold out",
     "description": "Description",
-    "specs": "Specifications",
+    "specs": "Product details",
+    "quantity": "Quantity",
     "delivery": "Delivery and returns",
     "warranty": "Warranty",
     "questions": "Questions",
@@ -83,7 +84,7 @@
     "add": "Add to cart",
     "buyNow": "Buy now",
     "added": "Added to your cart.",
-    "addFailed": "We couldn't add that. Try again.",
+    "addFailed": "We couldn’t confirm that was added. It may already be in your cart, so please check before trying again.",
     "goToCart": "Go to cart",
     "download": "A download: {times, plural, one {# download} other {# downloads}} within {days, plural, one {# day} other {# days}} of paying.",
     "downloadPlain": "A download, ready once you've paid.",
@@ -105,7 +106,9 @@
       "secure": "Secure checkout",
       "help": "Questions? Contact us"
     },
-    "service": "A service: we'll be in touch to arrange it."
+    "service": "A service: we'll be in touch to arrange it.",
+    "adding": "Adding…",
+    "viewCart": "View cart"
   },
   "cart": {
     "title": "Your cart",

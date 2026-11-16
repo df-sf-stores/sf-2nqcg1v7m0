@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Form, Link, SubmitButton, TextField, useStorefront } from '@dripfunnel/storefront-core/theme'
+import { storeName } from '../storeName'
 import styles from '../../styles/home.module.css'
 
 const emailShape = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
@@ -29,7 +30,7 @@ export const Newsletter = () => {
         <div className={styles.newsletterCopy}>
           <p className={styles.newsletterEyebrow}>{t('home.newsletter.eyebrow')}</p>
           <h2 className={styles.newsletterTitle}>{t('home.newsletter.title', { store: store.name })}</h2>
-          <p className={styles.newsletterBody}>{t('home.newsletter.body', { store: store.name })}</p>
+          <p className={styles.newsletterBody}>{t('home.newsletter.body', { store: storeName(store.name) })}</p>
         </div>
         {done ? (
           <div className={styles.newsletterDone} role="status">
@@ -54,7 +55,12 @@ export const Newsletter = () => {
               error={error}
               className={styles.newsletterField}
             />
-            <SubmitButton className={styles.newsletterJoin}>{t('home.newsletter.join')}</SubmitButton>
+            <SubmitButton className={styles.newsletterJoin}>
+              {t('home.newsletter.join')}
+              <svg className={styles.newsletterArrow} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </SubmitButton>
           </Form>
         )}
       </div>
