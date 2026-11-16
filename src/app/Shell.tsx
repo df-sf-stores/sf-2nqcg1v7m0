@@ -4,7 +4,9 @@ import { createI18n, createShopClient, loadStore, storedShopState, StorefrontPro
 import { useEffect, useState, type ReactNode } from 'react'
 import { storeConfig } from '../../store.config'
 
-const client = createShopClient({ endpoint: storeConfig.shopApi, state: storedShopState })
+// Local `next dev` only (shipped builds bring the platform's own client). The Shop API's cart operations currently take
+// 8–12 s, past core's 10 s default, so an add that succeeded on the server read as failed here; 30 s lets them answer.
+const client = createShopClient({ endpoint: storeConfig.shopApi, state: storedShopState, timeoutMs: 30_000 })
 
 export const Shell = ({ content, media, children }: { content: Record<string, Record<string, string>>; media: Record<string, string>; children: ReactNode }) => {
   const [store, setStore] = useState<ShopStoreSettings | null>(null)
