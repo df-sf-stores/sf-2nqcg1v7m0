@@ -77,6 +77,7 @@ export const Layout = ({ children }: { children: ReactNode }) => {
   // The contact email only from Site settings: written in content it would repeat the shop name, which the build refuses.
   const email = store.contactEmail ?? null
   const name = storeName(store.name)
+  const contactPhone = t('company.contact.phone')
   return (
     <WishlistProvider value={wishlist}>
     <div className={styles.shell}>
@@ -176,6 +177,16 @@ export const Layout = ({ children }: { children: ReactNode }) => {
                     </Link>
                   </li>
                 ))}
+              </ul>
+            </nav>
+            <nav className={styles.links} aria-label={t('common.footer.contactUs')}>
+              <h2 className={styles.heading}>{t('common.footer.contactUs')}</h2>
+              <ul className={styles.linkList}>
+                <li>
+                  <Link href={t('company.contact.tel')} className={styles.footerLink}>
+                    {t('common.footer.contactLine', { name, phone: contactPhone })}
+                  </Link>
+                </li>
               </ul>
             </nav>
           </div>

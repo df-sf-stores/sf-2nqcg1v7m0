@@ -13,6 +13,7 @@ export const ContactPage = () => {
   const name = storeName(store.name)
   // The contact email only from Site settings: written in content it would repeat the shop name, which the build refuses.
   const email = store.contactEmail ?? null
+  const contactPhone = t('company.contact.phone')
   const place = [store.address?.street, store.address?.city, store.address?.region, store.address?.postal].filter(Boolean).join(', ') || t('company.place')
   return (
     <Layout>
@@ -43,6 +44,19 @@ export const ContactPage = () => {
                   <dd className={styles.email}>{store.contactPhone}</dd>
                 </div>
               ) : null}
+              <div className={styles.detail}>
+                <dt className={styles.term}>{t('pages.contact.phone')}</dt>
+                <dd className={styles.email}>
+                  <Link href={t('company.contact.tel')} className={styles.noteLink}>
+                    {t('pages.contact.contactLine', { name, phone: contactPhone })}
+                  </Link>
+                </dd>
+                <dd className={styles.body}>
+                  <Link href={t('company.contact.whatsapp')} className={styles.noteLink}>
+                    {t('pages.contact.whatsapp')}
+                  </Link>
+                </dd>
+              </div>
               <div className={styles.detail}>
                 <dt className={styles.term}>{t('pages.contact.office')}</dt>
                 <dd className={styles.company}>{t('company.name')}</dd>

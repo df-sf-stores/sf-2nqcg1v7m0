@@ -42,6 +42,8 @@
     "rights": "© 2026 {store}. All rights reserved.",
     "powered": "Powered by",
     "poweredLogo": "DripFunnel",
-    "poweredHref": "https://www.dripfunnel.com/in/"
+    "poweredHref": "https://www.dripfunnel.com/in/",
+    "contactUs": "Contact Us",
+    "contactLine": "{name}: {phone}"
   }
 }
