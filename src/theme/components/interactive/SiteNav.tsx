@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, type KeyboardEvent } from 'react'
+import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
 import { Link, ThemeImage, useStorefront, type CollectionCard } from '@dripfunnel/storefront-core/theme'
 import { CollectionPicture } from '../CollectionPicture'
 import { cx } from '../cx'
@@ -12,8 +12,8 @@ export type NavEntry = NavLink & { children: NavLink[] }
 
 const allCollections = 'all-collections'
 const home = 'home'
-/** Home is a plain link: hovering it opens no panel, and the drawer shows no dropdown under it. */
-const plain = new Set([home])
+/** How long the Collections panel waits before closing once the pointer leaves, so crossing a small gap doesn't flicker it shut. */
+const closeDelay = 200
 /** After Home and Collections, these collections lead in this order; any other menu item follows in the admin's order. */
 const leading = ['/collections/fragrance/', '/collections/t-shirts/']
 const rank = (href: string) => {
@@ -34,12 +34,36 @@ const Chevron = ({ open }: { open: boolean }) => (
 )
 
 /**
- * The header's navigation: on wide screens a centred row whose items each open a mega panel of the store's collections,
- * on narrow ones a menu button and a drawer. Items are the merchant's menu, or the store's collections when it has none.
+ * The header's navigation: on wide screens a centred row where Collections opens one mega panel of the store's collections
+ * (the same panel from every page; the other items are plain links), on narrow ones a menu button and a drawer.
+ * Items are the merchant's menu, or the store's collections when it has none.
  */
 export const SiteNav = ({ items, collections }: { items: NavEntry[]; collections: readonly CollectionCard[] }) => {
   const { store, t } = useStorefront()
-  const [open, setOpen] = useState<string | null>(null)
+  // Whether the Collections panel is open. Only Collections opens it, so its content never depends on another item.
+  const [open, setOpen] = useState(false)
+  const closing = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const hold = () => {
+    if (closing.current) clearTimeout(closing.current)
+    closing.current = null
+  }
+  const show = () => {
+    hold()
+    setOpen(true)
+  }
+  const hide = () => {
+    hold()
+    setOpen(false)
+  }
+  const hideSoon = () => {
+    hold()
+    closing.current = setTimeout(() => setOpen(false), closeDelay)
+  }
+  useEffect(() => hold, [])
+  // Hover is a mouse's: a touch on a wide screen follows the link it taps, as the drawer's links do.
+  const onlyMouse = (then: () => void) => (event: PointerEvent) => {
+    if (event.pointerType === 'mouse') then()
+  }
   const [drawer, setDrawer] = useState(false)
   const [expanded, setExpanded] = useState<string | null>(null)
   // A menu item for the home page or Shop All is left out: Home leads already, and Shop All stays reachable from Collections.
@@ -54,15 +78,13 @@ export const SiteNav = ({ items, collections }: { items: NavEntry[]; collections
     setDrawer(false)
     setExpanded(null)
   }
-  const current = entries.find((e) => e.id === open) ?? null
-  const feature = current ? collections.find((c) => c.href === current.href) : undefined
   const escape = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key !== 'Escape') return
-    setOpen(null)
+    hide()
     setDrawer(false)
   }
   return (
-    <div className={styles.nav} onKeyDown={escape} onPointerLeave={() => setOpen(null)}>
+    <div className={styles.nav} onKeyDown={escape} onPointerEnter={onlyMouse(hold)} onPointerLeave={onlyMouse(hideSoon)}>
       <button type="button" className={styles.burger} aria-expanded={drawer} aria-controls="site-drawer" onClick={() => setDrawer(!drawer)}>
         <svg className={styles.burgerIcon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <path d={drawer ? 'M6 6l12 12M18 6L6 18' : 'M4 7h16M4 12h16M4 17h10'} />
@@ -72,23 +94,29 @@ export const SiteNav = ({ items, collections }: { items: NavEntry[]; collections
 
       <nav className={styles.row} aria-label={t('common.nav.label')}>
         <ul className={styles.rowList}>
-          {entries.map((entry) => (
-            <li key={entry.id} className={styles.rowItem} onPointerEnter={() => setOpen(plain.has(entry.id) ? null : entry.id)}>
-              <Link href={entry.href} className={cx(styles.rowLink, open === entry.id && styles.rowLinkOn)}>
-                {entry.label}
-              </Link>
-              {plain.has(entry.id) ? null : (
-              <button type="button" className={styles.rowToggle} aria-expanded={open === entry.id} aria-label={t('common.nav.submenu', { item: entry.label })} onClick={() => setOpen(open === entry.id ? null : entry.id)}>
-                <Chevron open={open === entry.id} />
-              </button>
-              )}
-            </li>
-          ))}
+          {entries.map((entry) =>
+            entry.id === allCollections ? (
+              <li key={entry.id} className={styles.rowItem} onPointerEnter={onlyMouse(show)}>
+                <Link href={entry.href} className={cx(styles.rowLink, open && styles.rowLinkOn)}>
+                  {entry.label}
+                </Link>
+                <button type="button" className={styles.rowToggle} aria-expanded={open} aria-controls="collections-panel" aria-label={t('common.nav.submenu', { item: entry.label })} onClick={() => (open ? hide() : show())}>
+                  <Chevron open={open} />
+                </button>
+              </li>
+            ) : (
+              <li key={entry.id} className={styles.rowItem} onPointerEnter={onlyMouse(hide)} onClick={hide}>
+                <Link href={entry.href} className={styles.rowLink}>
+                  {entry.label}
+                </Link>
+              </li>
+            ),
+          )}
         </ul>
       </nav>
 
-      {current ? (
-        <div className={styles.mega}>
+      {open ? (
+        <div id="collections-panel" className={styles.mega} onClick={hide}>
           <div className={styles.megaHead}>
             <div>
               <p className={styles.eyebrow}>{t('common.mega.eyebrow', { store: store.name })}</p>
@@ -117,32 +145,26 @@ export const SiteNav = ({ items, collections }: { items: NavEntry[]; collections
           <div className={styles.megaBody}>
             <div className={styles.megaLinks}>
               <div className={styles.megaLinksHead}>
-                <p className={styles.megaSub}>{current.id === allCollections ? t('common.mega.browse') : current.label}</p>
-                {current.id === allCollections ? null : (
-                  <Link href={current.href} className={styles.megaMore}>
-                    {t('common.mega.viewAll')}
-                    <Arrow />
-                  </Link>
-                )}
+                <p className={styles.megaSub}>{t('common.mega.browse')}</p>
               </div>
               <ul className={styles.megaList}>
-                {(current.id === allCollections ? collections.map((c) => ({ id: c.id, label: tidyName(c.name), href: c.href })) : current.children.length ? current.children : entries.filter((e) => e.id !== allCollections && !plain.has(e.id) && e.id !== current.id)).map((link) => (
-                  <li key={link.id}>
-                    <Link href={link.href} className={styles.megaLink}>
-                      {link.label}
+                {collections.map((c) => (
+                  <li key={c.id}>
+                    <Link href={c.href} className={styles.megaLink}>
+                      {tidyName(c.name)}
                     </Link>
                   </li>
                 ))}
               </ul>
             </div>
-            <Link href={current.href} className={styles.feature}>
-              {feature ? <CollectionPicture collection={feature} ratio={2.4} width={420} className={styles.featureImage} /> : <ThemeImage src="hero.webp" alt="" ratio={2.4} sizes="420px" className={styles.featureImage} />}
+            <Link href="/collections/all/" className={styles.feature}>
+              <ThemeImage src="hero.webp" alt="" ratio={2.4} sizes="420px" className={styles.featureImage} />
               <span className={styles.featureShade} />
               <span className={styles.featureCopy}>
                 <span className={styles.featureEyebrow}>{t('common.mega.featureEyebrow')}</span>
-                <span className={styles.featureTitle}>{feature ? tidyName(feature.name) : t('common.mega.featureTitle')}</span>
+                <span className={styles.featureTitle}>{t('common.mega.featureTitle')}</span>
                 <span className={styles.featureCta}>
-                  {feature ? t('common.mega.shop', { name: tidyName(feature.name) }) : t('common.mega.featureCta', { store: store.name })}
+                  {t('common.mega.featureCta', { store: store.name })}
                   <Arrow />
                 </span>
               </span>
