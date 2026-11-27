@@ -400,6 +400,8 @@
   display: none;
   overflow-y: auto;
   height: calc(100vh - 64px);
+  /* The visible height on phones, so the drawer's end isn't hidden behind the browser's own bars. */
+  height: calc(100dvh - 64px);
   box-sizing: border-box;
   padding: 12px 20px 40px;
   border-top: 1px solid var(--night-line);
@@ -674,12 +676,6 @@
 .megaLink:focus-visible {
   outline: 1px solid var(--taupe-text);
   outline-offset: 3px;
-}
-
-@media (min-width: 640px) {
-  .drawer {
-    height: calc(100vh - 64px);
-  }
 }
 
 @media (min-width: 1100px) {

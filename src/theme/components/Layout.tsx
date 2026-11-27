@@ -59,7 +59,7 @@ export const Layout = ({ children }: { children: ReactNode }) => {
   const social = store.social.filter((s) => s.network !== 'whatsapp')
   // The merchant's menu leads the header; a store without one shows its collections.
   const entries: NavEntry[] = menu.items.length
-    ? menu.items.map((item) => ({ id: item.id, label: item.label, href: item.href, children: item.children.map((c) => ({ id: c.id, label: c.label, href: c.href })) }))
+    ? menu.items.map((item) => ({ id: item.id, label: tidyName(item.label), href: item.href, children: item.children.map((c) => ({ id: c.id, label: tidyName(c.label), href: c.href })) }))
     : collections.map((c) => ({ id: c.id, label: tidyName(c.name), href: c.href, children: [] }))
   // The footer's shop links: every collection the admin shows on the store (core leaves hidden ones out), then Shop All.
   // A collection of the store's own at /collections/all/ is left to the Shop All link, so no address is listed twice.

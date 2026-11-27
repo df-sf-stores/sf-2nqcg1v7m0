@@ -11,6 +11,15 @@ export type NavLink = { id: string; label: string; href: string }
 export type NavEntry = NavLink & { children: NavLink[] }
 
 const allCollections = 'all-collections'
+const home = 'home'
+/** Home is a plain link: hovering it opens no panel, and the drawer shows no dropdown under it. */
+const plain = new Set([home])
+/** After Home and Collections, these collections lead in this order; any other menu item follows in the admin's order. */
+const leading = ['/collections/fragrance/', '/collections/t-shirts/']
+const rank = (href: string) => {
+  const at = leading.indexOf(href)
+  return at === -1 ? leading.length : at
+}
 
 const Arrow = () => (
   <svg className={styles.arrow} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -33,7 +42,18 @@ export const SiteNav = ({ items, collections }: { items: NavEntry[]; collections
   const [open, setOpen] = useState<string | null>(null)
   const [drawer, setDrawer] = useState(false)
   const [expanded, setExpanded] = useState<string | null>(null)
-  const entries: NavEntry[] = [...items, { id: allCollections, label: t('common.nav.collections'), href: '/collections/all/', children: [] }]
+  // A menu item for the home page or Shop All is left out: Home leads already, and Shop All stays reachable from Collections.
+  const ordered = items.filter((item) => item.href !== '/' && item.href !== '/collections/all/').toSorted((a, b) => rank(a.href) - rank(b.href))
+  const entries: NavEntry[] = [
+    { id: home, label: t('common.nav.home'), href: '/', children: [] },
+    { id: allCollections, label: t('common.nav.collections'), href: '/collections/all/', children: [] },
+    ...ordered,
+  ]
+  // Following any drawer link closes the drawer, so it doesn't stay open over the page it leads to.
+  const closeDrawer = () => {
+    setDrawer(false)
+    setExpanded(null)
+  }
   const current = entries.find((e) => e.id === open) ?? null
   const feature = current ? collections.find((c) => c.href === current.href) : undefined
   const escape = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -53,13 +73,15 @@ export const SiteNav = ({ items, collections }: { items: NavEntry[]; collections
       <nav className={styles.row} aria-label={t('common.nav.label')}>
         <ul className={styles.rowList}>
           {entries.map((entry) => (
-            <li key={entry.id} className={styles.rowItem} onPointerEnter={() => setOpen(entry.id)}>
+            <li key={entry.id} className={styles.rowItem} onPointerEnter={() => setOpen(plain.has(entry.id) ? null : entry.id)}>
               <Link href={entry.href} className={cx(styles.rowLink, open === entry.id && styles.rowLinkOn)}>
                 {entry.label}
               </Link>
+              {plain.has(entry.id) ? null : (
               <button type="button" className={styles.rowToggle} aria-expanded={open === entry.id} aria-label={t('common.nav.submenu', { item: entry.label })} onClick={() => setOpen(open === entry.id ? null : entry.id)}>
                 <Chevron open={open === entry.id} />
               </button>
+              )}
             </li>
           ))}
         </ul>
@@ -104,7 +126,7 @@ export const SiteNav = ({ items, collections }: { items: NavEntry[]; collections
                 )}
               </div>
               <ul className={styles.megaList}>
-                {(current.id === allCollections ? collections.map((c) => ({ id: c.id, label: tidyName(c.name), href: c.href })) : current.children.length ? current.children : entries.filter((e) => e.id !== allCollections && e.id !== current.id)).map((link) => (
+                {(current.id === allCollections ? collections.map((c) => ({ id: c.id, label: tidyName(c.name), href: c.href })) : current.children.length ? current.children : entries.filter((e) => e.id !== allCollections && !plain.has(e.id) && e.id !== current.id)).map((link) => (
                   <li key={link.id}>
                     <Link href={link.href} className={styles.megaLink}>
                       {link.label}
@@ -132,21 +154,20 @@ export const SiteNav = ({ items, collections }: { items: NavEntry[]; collections
       <div id="site-drawer" className={cx(styles.drawer, drawer && styles.drawerOpen)} hidden={!drawer}>
         <nav aria-label={t('common.nav.menu')}>
           <ul className={styles.drawerList}>
-            <li>
-              <Link href="/" className={styles.drawerLink}>
-                {t('common.nav.home')}
-              </Link>
-            </li>
             {entries.map((entry) => {
               const links = entry.id === allCollections ? collections.map((c) => ({ id: c.id, label: tidyName(c.name), href: c.href })) : entry.children
               return (
                 <li key={entry.id}>
-                  <div className={styles.drawerRow}>
+                  <div className={styles.drawerRow} onClick={closeDrawer}>
                     <Link href={entry.href} className={styles.drawerLink}>
                       {entry.label}
                     </Link>
                     {links.length ? (
-                      <button type="button" className={styles.drawerToggle} aria-expanded={expanded === entry.id} aria-label={t('common.nav.submenu', { item: entry.label })} onClick={() => setExpanded(expanded === entry.id ? null : entry.id)}>
+                      <button type="button" className={styles.drawerToggle} aria-expanded={expanded === entry.id} aria-label={t('common.nav.submenu', { item: entry.label })} onClick={(event) => {
+                          // The chevron only opens the list; it doesn't count as following the link beside it.
+                          event.stopPropagation()
+                          setExpanded(expanded === entry.id ? null : entry.id)
+                        }}>
                         <Chevron open={expanded === entry.id} />
                       </button>
                     ) : null}
@@ -154,7 +175,7 @@ export const SiteNav = ({ items, collections }: { items: NavEntry[]; collections
                   {links.length && expanded === entry.id ? (
                     <ul className={styles.drawerSub}>
                       {links.map((link) => (
-                        <li key={link.id}>
+                        <li key={link.id} onClick={closeDrawer}>
                           <Link href={link.href} className={styles.drawerSubLink}>
                             {link.label}
                           </Link>
@@ -166,7 +187,7 @@ export const SiteNav = ({ items, collections }: { items: NavEntry[]; collections
               )
             })}
           </ul>
-          <ul className={styles.drawerTools}>
+          <ul className={styles.drawerTools} onClick={closeDrawer}>
             <li>
               <Link href="/account/" className={styles.drawerTool}>
                 {t('common.tools.account')}
